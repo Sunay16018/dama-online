@@ -16,9 +16,6 @@ const playerTeam = document.getElementById('playerTeam');
 const capturedPiecesEl = document.getElementById('capturedPieces');
 
 // Sohbet elementleri
-const chatArea = document.getElementById('chatArea');
-const toggleChatBtn = document.getElementById('toggleChatBtn');
-const closeChatBtn = document.getElementById('closeChatBtn');
 const chatMessages = document.getElementById('chatMessages');
 const chatInput = document.getElementById('chatInput');
 const sendChatBtn = document.getElementById('sendChatBtn');
@@ -43,7 +40,7 @@ let capturedB = [];
 let isAnimating = false;
 let animationQueue = [];
 
-// Kullanıcı değişkenleri
+// Kullanıcı adı
 let username = localStorage.getItem('dama_username');
 if (!username) {
     const randomNum = Math.floor(Math.random() * 1000) + 1;
@@ -52,9 +49,8 @@ if (!username) {
 }
 usernameDisplay.textContent = username;
 
-// Sayfa yenilendiğinde session'dan oda kodunu al
+// Sayfa yenilendiğinde
 const savedRoom = sessionStorage.getItem('currentRoom');
-
 if (savedRoom) {
     currentRoom = savedRoom;
     roomCodeInput.value = savedRoom;
@@ -68,8 +64,6 @@ if (savedRoom) {
 socket.on('connect', () => {
     console.log('✅ Bağlandı:', socket.id);
     statusEl.textContent = '✅ Sunucuya bağlandı';
-    
-    // Kullanıcı adını sunucuya bildir
     socket.emit('setUsername', username);
     
     if (savedRoom && !currentRoom) {
@@ -81,7 +75,7 @@ socket.on('connect_error', () => {
     statusEl.textContent = '❌ Sunucuya bağlanılamıyor';
 });
 
-// İsim değiştirme işlemleri
+// İsim değiştirme
 editUsernameBtn.addEventListener('click', () => {
     newUsernameInput.value = username;
     editUsernameModal.style.display = 'flex';
@@ -103,33 +97,19 @@ cancelUsernameBtn.addEventListener('click', () => {
     editUsernameModal.style.display = 'none';
 });
 
-// Enter tuşu ile kaydet
 newUsernameInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         saveUsernameBtn.click();
     }
 });
 
-// Modal dışına tıklayınca kapat
 window.addEventListener('click', (e) => {
     if (e.target === editUsernameModal) {
         editUsernameModal.style.display = 'none';
     }
 });
 
-// Sohbet butonları
-toggleChatBtn.addEventListener('click', () => {
-    chatArea.style.display = 'flex';
-    toggleChatBtn.style.display = 'none';
-    chatInput.focus();
-});
-
-closeChatBtn.addEventListener('click', () => {
-    chatArea.style.display = 'none';
-    toggleChatBtn.style.display = 'flex';
-});
-
-// Mesaj gönderme
+// Sohbet fonksiyonları
 function sendMessage() {
     const message = chatInput.value.trim();
     if (message) {
@@ -150,16 +130,20 @@ chatInput.addEventListener('keypress', (e) => {
     }
 });
 
-// Gelen sohbet mesajları
+// Gelen mesajlar
 socket.on('chatMessage', (data) => {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${data.username === username ? 'own-message' : 'other-message'}`;
     
-    const time = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    const time = new Date().toLocaleTimeString('tr-TR', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+    });
     
     messageDiv.innerHTML = `
         <div class="message-header">
-            <span class="message-sender">${data.username}</span>
+            <span class="message-sender">${escapeHtml(data.username)}</span>
             <span class="message-time">${time}</span>
         </div>
         <div class="message-content">${escapeHtml(data.message)}</div>
@@ -169,14 +153,13 @@ socket.on('chatMessage', (data) => {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
-// HTML escape fonksiyonu (XSS koruması)
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-// Butonlar
+// Oyun butonları
 document.getElementById('createRoomBtn').addEventListener('click', () => {
     socket.emit('createRoom');
     statusEl.textContent = '🔄 Oda oluşturuluyor...';
@@ -221,16 +204,13 @@ socket.on('roomCreated', (roomCode) => {
     statusEl.textContent = `🎲 Oda oluşturuldu: ${roomCode} - Rakip bekleniyor...`;
 });
 
-// Odaya katılındı
 socket.on('joined', (roomCode) => {
     currentRoom = roomCode;
     sessionStorage.setItem('currentRoom', roomCode);
     statusEl.textContent = `🚪 Odaya katıldınız: ${roomCode} - Rakip bekleniyor...`;
 });
 
-// Oyun başladı
 socket.on('gameStart', (data) => {
-    console.log('Oyun başladı:', data);
     boardState = data.board;
     turn = data.turn;
     myTeam = data.myTeam;
@@ -254,123 +234,20 @@ socket.on('gameStart', (data) => {
     updateCapturedPieces();
 });
 
-// Tahta güncelleme
 socket.on('updateBoard', (data) => {
-    const { board, turn: newTurn, capturedA: newCapturedA, capturedB: newCapturedB, lastMove, perspective: newPerspective } = data;
+    boardState = data.board;
+    turn = data.turn;
+    perspective = data.perspective;
+    capturedA = data.capturedA || [];
+    capturedB = data.capturedB || [];
     
-    perspective = newPerspective;
-    
-    if (lastMove) {
-        animateMove(lastMove, board, () => {
-            boardState = board;
-            turn = newTurn;
-            capturedA = newCapturedA || [];
-            capturedB = newCapturedB || [];
-            selectedPiece = null;
-            validMoves = { normal: [], captures: [] };
-            renderBoard();
-            updateTurnInfo();
-            updateCapturedPieces();
-        });
-    } else {
-        boardState = board;
-        turn = newTurn;
-        capturedA = newCapturedA || [];
-        capturedB = newCapturedB || [];
-        selectedPiece = null;
-        validMoves = { normal: [], captures: [] };
-        renderBoard();
-        updateTurnInfo();
-        updateCapturedPieces();
-    }
+    selectedPiece = null;
+    validMoves = { normal: [], captures: [] };
+    renderBoard();
+    updateTurnInfo();
+    updateCapturedPieces();
 });
 
-// Animasyonlu hamle
-function animateMove(move, newBoard, callback) {
-    if (isAnimating) {
-        animationQueue.push({ move, newBoard, callback });
-        return;
-    }
-    
-    isAnimating = true;
-    const [fromRow, fromCol] = move.from;
-    const [toRow, toCol] = move.to;
-    
-    const pieceElement = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"] .piece`);
-    if (!pieceElement) {
-        isAnimating = false;
-        callback();
-        return;
-    }
-    
-    const targetSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
-    if (!targetSquare) {
-        isAnimating = false;
-        callback();
-        return;
-    }
-    
-    const clone = pieceElement.cloneNode(true);
-    clone.style.position = 'fixed';
-    clone.style.width = pieceElement.offsetWidth + 'px';
-    clone.style.height = pieceElement.offsetHeight + 'px';
-    clone.style.left = pieceElement.getBoundingClientRect().left + 'px';
-    clone.style.top = pieceElement.getBoundingClientRect().top + 'px';
-    clone.style.zIndex = '1000';
-    clone.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-    clone.style.pointerEvents = 'none';
-    
-    document.body.appendChild(clone);
-    pieceElement.style.opacity = '0';
-    
-    const targetRect = targetSquare.getBoundingClientRect();
-    
-    if (move.capture) {
-        const [captureRow, captureCol] = move.capture;
-        const capturedPiece = document.querySelector(`[data-row="${captureRow}"][data-col="${captureCol}"] .piece`);
-        
-        if (capturedPiece) {
-            createExplosionEffect(capturedPiece.getBoundingClientRect());
-            capturedPiece.style.opacity = '0';
-        }
-    }
-    
-    setTimeout(() => {
-        clone.style.left = targetRect.left + 'px';
-        clone.style.top = targetRect.top + 'px';
-        clone.style.transform = 'scale(1.1)';
-    }, 10);
-    
-    setTimeout(() => {
-        clone.remove();
-        pieceElement.style.opacity = '1';
-        isAnimating = false;
-        callback();
-        
-        if (animationQueue.length > 0) {
-            const next = animationQueue.shift();
-            animateMove(next.move, next.newBoard, next.callback);
-        }
-    }, 300);
-}
-
-// Patlama efekti
-function createExplosionEffect(rect) {
-    for (let i = 0; i < 8; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'explosion-particle';
-        particle.style.left = rect.left + rect.width/2 + 'px';
-        particle.style.top = rect.top + rect.height/2 + 'px';
-        particle.style.backgroundColor = `hsl(${Math.random() * 60 + 30}, 100%, 50%)`;
-        particle.style.setProperty('--angle', Math.random() * 360 + 'deg');
-        particle.style.setProperty('--distance', Math.random() * 50 + 20 + 'px');
-        document.body.appendChild(particle);
-        
-        setTimeout(() => particle.remove(), 500);
-    }
-}
-
-// Olası hamleler
 socket.on('possibleMoves', (data) => {
     validMoves = {
         normal: data.normalMoves || [],
@@ -379,7 +256,6 @@ socket.on('possibleMoves', (data) => {
     renderBoard();
 });
 
-// Oyun bitti
 socket.on('gameOver', (data) => {
     boardState = data.board;
     turn = data.turn;
@@ -394,7 +270,6 @@ socket.on('gameOver', (data) => {
     createConfetti();
 });
 
-// Hata mesajı
 socket.on('error', (msg) => {
     statusEl.textContent = '❌ ' + msg;
     if (msg.includes('dolu') || msg.includes('bulunamadı')) {
@@ -402,34 +277,12 @@ socket.on('error', (msg) => {
     }
 });
 
-// Oyuncu ayrıldı
 socket.on('playerLeft', () => {
     statusEl.textContent = '👋 Rakip ayrıldı';
     gameStatus.textContent = '⚠️ Rakip ayrıldı - Oyun bekliyor';
 });
 
-// Konfeti efekti
-function createConfetti() {
-    for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.animationDelay = Math.random() * 2 + 's';
-        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        document.body.appendChild(confetti);
-        
-        setTimeout(() => confetti.remove(), 3000);
-    }
-}
-
-// Kazananı göster
-function showWinner(winner) {
-    const teamName = winner === 'A' ? '🔴 KIRMIZI KAZANDI!' : '🔵 MAVİ KAZANDI!';
-    winnerText.innerHTML = `🏆 ${teamName} 🏆`;
-    gameOverlay.style.display = 'flex';
-}
-
-// Tahtayı render et
+// Oyun fonksiyonları
 function renderBoard() {
     boardEl.innerHTML = '';
     
@@ -504,7 +357,6 @@ function renderBoard() {
     }
 }
 
-// Yenen taşları güncelle
 function updateCapturedPieces() {
     if (!capturedPiecesEl) return;
     
@@ -541,7 +393,6 @@ function updateCapturedPieces() {
     capturedPiecesEl.appendChild(myCapturedDiv);
 }
 
-// Taşa tıklandı
 function onPieceClick(row, col) {
     const piece = boardState[row]?.[col];
     if (!piece) return;
@@ -565,7 +416,6 @@ function onPieceClick(row, col) {
     });
 }
 
-// Kareye tıklandı
 function onSquareClick(row, col) {
     if (!selectedPiece) return;
     if (turn !== myTeam) return;
@@ -592,7 +442,6 @@ function onSquareClick(row, col) {
     validMoves = { normal: [], captures: [] };
 }
 
-// Sıra bilgisini güncelle
 function updateTurnInfo() {
     const teamName = turn === 'A' ? '🔴 KIRMIZI' : '🔵 MAVİ';
     const isMe = turn === myTeam ? ' (SEN)' : ' (RAKİP)';
@@ -606,7 +455,8 @@ function updateTurnInfo() {
     const meDiv = document.createElement('div');
     meDiv.className = `player-item ${turn === myTeam ? 'active' : ''}`;
     meDiv.innerHTML = `
-        <span>${turn === myTeam ? '▶️ ' : ''}${myTeam === 'A' ? 'team-A-badge' : 'team-B-badge'}">${myTeam}</span>
+        <span>${turn === myTeam ? '▶️ ' : ''}${myTeam === 'A' ? '🔴' : '🔵'} ${myTeam === 'A' ? 'Kırmızı' : 'Mavi'} (Sen)</span>
+        <span class="${myTeam === 'A' ? 'team-A-badge' : 'team-B-badge'}">${myTeam}</span>
     `;
     playersEl.appendChild(meDiv);
     
@@ -624,3 +474,21 @@ function updateTurnInfo() {
         gameStatus.innerHTML = gameWinner ? '🏁 OYUN BİTTİ' : '🎮 OYUN DEVAM EDİYOR';
     }
 }
+
+function showWinner(winner) {
+    const teamName = winner === 'A' ? '🔴 KIRMIZI KAZANDI!' : '🔵 MAVİ KAZANDI!';
+    winnerText.innerHTML = `🏆 ${teamName} 🏆`;
+    gameOverlay.style.display = 'flex';
+}
+
+function createConfetti() {
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+    }
+          }
