@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1vs1 Online Dama - Animasyonlu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 1vs1 DAMA</h1>
+        
+        <div class="room-controls" id="lobbyControls">
+            <input type="text" id="roomCodeInput" placeholder="ODA KODU" maxlength="6" autocomplete="off">
+            <button id="createRoomBtn">🎲 ODA OLUŞTUR</button>
+            <button id="joinRoomBtn">🚪 ODAYA KATIL</button>
+        </div>
+        
+        <div id="status" class="status">🔌 Sunucuya bağlanıyor...</div>
+        
+        <div id="gameArea" style="display: none;">
+            <div class="game-header">
+                <div id="roomCode" class="room-code-badge"></div>
+                <div class="player-indicator" id="playerTeam"></div>
+                <button id="leaveRoomBtn" class="leave-btn">🏠 ANA SAYFA</button>
+            </div>
+            
+            <div class="game-content">
+                <div class="board-wrapper">
+                    <div class="board" id="board"></div>
+                </div>
+                
+                <div class="info-panel">
+                    <div id="turnIndicator" class="turn-indicator">---</div>
+                    <div id="players" class="players-list"></div>
+                    <div id="gameStatus" class="game-status"></div>
+                    
+                    <!-- YENİ: Yenen taşlar alanı -->
+                    <div id="capturedPieces" class="captured-pieces-container"></div>
+                </div>
+            </div>
+            
+            <div id="gameOverlay" class="game-overlay" style="display: none;">
+                <div class="overlay-content">
+                    <h2 id="winnerText"></h2>
+                    <button id="playAgainBtn" class="play-again-btn">🔄 TEKRAR OYNA</button>
+                    <button id="backToLobbyBtn" class="back-btn">🏠 ANA SAYFA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
