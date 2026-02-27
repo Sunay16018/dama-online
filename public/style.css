@@ -25,7 +25,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     border-radius: 20px;
@@ -41,6 +41,158 @@ h1 {
     font-size: clamp(1.5rem, 5vw, 2.5rem);
     margin-bottom: 20px;
     letter-spacing: 2px;
+}
+
+/* Kullanıcı Bilgisi */
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #4a3729;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #8b5a2b;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.username-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #2d1f15;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid #b8860b;
+}
+
+.username-label {
+    color: #ffd966;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.username-display {
+    color: gold;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 2px black;
+    min-width: 120px;
+}
+
+.edit-username-btn {
+    background: none;
+    border: none;
+    color: #b8860b;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 5px;
+    min-width: auto;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.edit-username-btn:hover {
+    color: gold;
+    transform: scale(1.1);
+    background: none;
+    box-shadow: none;
+}
+
+.edit-username-btn:active {
+    transform: scale(0.95);
+}
+
+.user-status {
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 1rem;
+    background: #2d1f15;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid #4caf50;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #4a3729;
+    padding: 30px;
+    border-radius: 15px;
+    border: 3px solid gold;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal-content h3 {
+    color: gold;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #b8860b;
+    border-radius: 8px;
+    background: #f0e6d2;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.modal-content input:focus {
+    outline: none;
+    border-color: gold;
+    box-shadow: 0 0 10px gold;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 10px 25px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.save-btn {
+    background: #228b22;
+    color: white;
+    box-shadow: 0 3px 0 #0a5a0a;
+}
+
+.cancel-btn {
+    background: #8b0000;
+    color: white;
+    box-shadow: 0 3px 0 #5a0000;
+}
+
+.modal-btn:active {
+    transform: translateY(3px);
+    box-shadow: none;
 }
 
 .room-controls {
@@ -115,13 +267,233 @@ button:disabled {
     border: 1px solid #b8860b;
 }
 
+/* Sohbet Butonu */
+.toggle-chat-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    min-width: auto;
+    padding: 15px 25px;
+    background: #4a3729;
+    border: 2px solid gold;
+    box-shadow: 0 5px 0 #2d1f15;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: pulse-chat 2s infinite;
+}
+
+@keyframes pulse-chat {
+    0% { box-shadow: 0 5px 0 #2d1f15, 0 0 0 0 gold; }
+    50% { box-shadow: 0 5px 0 #2d1f15, 0 0 20px 5px gold; }
+    100% { box-shadow: 0 5px 0 #2d1f15, 0 0 0 0 gold; }
+}
+
+.toggle-chat-btn i {
+    font-size: 1.4rem;
+}
+
+/* Ana İçerik */
+.main-content {
+    display: flex;
+    gap: 20px;
+    position: relative;
+}
+
 /* Oyun Alanı */
 #gameArea {
+    flex: 2;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
+/* Sohbet Alanı */
+.chat-area {
+    flex: 1;
+    min-width: 300px;
+    background: #4a3729;
+    border-radius: 15px;
+    border: 2px solid #8b5a2b;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    animation: slideIn 0.3s ease;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #2d1f15;
+    border-radius: 13px 13px 0 0;
+    border-bottom: 2px solid gold;
+}
+
+.chat-header h3 {
+    color: gold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+}
+
+.close-chat-btn {
+    min-width: auto;
+    padding: 5px 10px;
+    background: #8b0000;
+    box-shadow: 0 3px 0 #5a0000;
+    font-size: 1rem;
+}
+
+.close-chat-btn:hover {
+    background: #a00000;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(0,0,0,0.2);
+}
+
+.chat-welcome {
+    text-align: center;
+    color: #b8860b;
+    padding: 20px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.chat-welcome i {
+    font-size: 1.5rem;
+    color: gold;
+}
+
+.message {
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 85%;
+    word-wrap: break-word;
+    animation: messageAppear 0.2s ease;
+}
+
+@keyframes messageAppear {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.own-message {
+    align-self: flex-end;
+    background: #2d5a3a;
+    color: white;
+    border: 1px solid #4caf50;
+}
+
+.message.other-message {
+    align-self: flex-start;
+    background: #4a3729;
+    color: #ffd966;
+    border: 1px solid #b8860b;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+}
+
+.message-sender {
+    font-weight: bold;
+    color: gold;
+}
+
+.message-time {
+    color: #b8860b;
+    font-size: 0.7rem;
+}
+
+.message-content {
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+    background: #2d1f15;
+    border-radius: 0 0 13px 13px;
+    border-top: 1px solid #b8860b;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #b8860b;
+    border-radius: 8px;
+    background: #f0e6d2;
+    font-size: 1rem;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: gold;
+    box-shadow: 0 0 10px gold;
+}
+
+.send-chat-btn {
+    min-width: auto;
+    padding: 10px 15px;
+    background: #228b22;
+    box-shadow: 0 3px 0 #0a5a0a;
+    font-size: 1.1rem;
+}
+
+.send-chat-btn:hover {
+    background: #2a9d2a;
+}
+
+.chat-info {
+    padding: 5px 15px 10px;
+    color: #b8860b;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #2d1f15;
+}
+
+/* Scrollbar stilleri */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #2d1f15;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #b8860b;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #ffd966;
+}
+
+/* Oyun Alanı stilleri (önceki CSS'ler aynen kalacak) */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -170,15 +542,6 @@ button:disabled {
     box-shadow: 0 5px 0 #5a0000;
 }
 
-.leave-btn:hover {
-    background: #a00000;
-}
-
-.leave-btn:active {
-    transform: translateY(5px);
-    box-shadow: none;
-}
-
 .game-content {
     display: flex;
     gap: 30px;
@@ -195,19 +558,6 @@ button:disabled {
     position: relative;
 }
 
-.board-wrapper::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border: 2px solid gold;
-    border-radius: 25px;
-    pointer-events: none;
-    opacity: 0.3;
-}
-
 .board {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -217,10 +567,8 @@ button:disabled {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
 }
 
-/* Kareler */
 .square {
     width: 100%;
     height: 100%;
@@ -229,32 +577,16 @@ button:disabled {
     align-items: center;
     position: relative;
     cursor: pointer;
-    transition: background-color 0.2s ease;
 }
 
 .square.light {
     background: #f5e6d3;
-    background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 50%);
 }
 
 .square.dark {
     background: #8b5a2b;
-    background-image: radial-gradient(circle at 70% 70%, rgba(0,0,0,0.2) 0%, transparent 50%);
 }
 
-.square.light:hover {
-    background: #e6d7b5;
-}
-
-.square.dark:hover {
-    background: #9b6b3b;
-}
-
-.square:active {
-    filter: brightness(0.9);
-}
-
-/* Koordinat etiketleri */
 .square::after {
     content: attr(data-coord);
     position: absolute;
@@ -266,105 +598,27 @@ button:disabled {
     font-weight: bold;
 }
 
-.square.dark::after {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-/* Taşlar - KIRMIZI TAKIM (A) */
+/* Taşlar */
 .piece.team-A {
     width: 80%;
     height: 80%;
     border-radius: 50%;
     position: relative;
     cursor: pointer;
-    transition: all 0.2s ease;
     box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4);
-    will-change: transform;
     background: radial-gradient(circle at 30% 30%, #ff6b6b, #8b0000);
 }
 
-/* Taşlar - MAVİ TAKIM (B) */
 .piece.team-B {
     width: 80%;
     height: 80%;
     border-radius: 50%;
     position: relative;
     cursor: pointer;
-    transition: all 0.2s ease;
     box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4);
-    will-change: transform;
     background: radial-gradient(circle at 30% 30%, #6b9fff, #00008b);
 }
 
-/* 3D efekt - TÜM TAŞLAR İÇİN */
-.piece.team-A::before,
-.piece.team-B::before {
-    content: '';
-    position: absolute;
-    top: 10%;
-    left: 10%;
-    width: 30%;
-    height: 30%;
-    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-    border-radius: 50%;
-    z-index: 2;
-}
-
-.piece.team-A:hover,
-.piece.team-B:hover {
-    transform: scale(1.08) translateY(-2px);
-    filter: brightness(1.2);
-    cursor: pointer;
-    box-shadow: 0 7px 0 rgba(0, 0, 0, 0.3), 0 12px 15px rgba(0, 0, 0, 0.4);
-}
-
-/* Seçili taş - KIRMIZI */
-.piece.team-A.selected {
-    animation: glowRed 1.5s infinite;
-}
-
-/* Seçili taş - MAVİ */
-.piece.team-B.selected {
-    animation: glowBlue 1.5s infinite;
-}
-
-@keyframes glowRed {
-    0% { box-shadow: 0 0 5px #ff6b6b, 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4); }
-    50% { box-shadow: 0 0 20px #ff6b6b, 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4); }
-    100% { box-shadow: 0 0 5px #ff6b6b, 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4); }
-}
-
-@keyframes glowBlue {
-    0% { box-shadow: 0 0 5px #6b9fff, 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4); }
-    50% { box-shadow: 0 0 20px #6b9fff, 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4); }
-    100% { box-shadow: 0 0 5px #6b9fff, 0 5px 0 rgba(0, 0, 0, 0.3), 0 8px 10px rgba(0, 0, 0, 0.4); }
-}
-
-/* Dama (king) - KIRMIZI */
-.piece.team-A.king {
-    transform: scale(1.1);
-    animation: kingGlowRed 2s infinite;
-}
-
-/* Dama (king) - MAVİ */
-.piece.team-B.king {
-    transform: scale(1.1);
-    animation: kingGlowBlue 2s infinite;
-}
-
-@keyframes kingGlowRed {
-    0% { box-shadow: 0 0 5px #ff6b6b, 0 5px 0 rgba(0,0,0,0.3), 0 8px 10px rgba(0,0,0,0.4); }
-    50% { box-shadow: 0 0 20px #ff6b6b, 0 5px 0 rgba(0,0,0,0.3), 0 8px 10px rgba(0,0,0,0.4); }
-    100% { box-shadow: 0 0 5px #ff6b6b, 0 5px 0 rgba(0,0,0,0.3), 0 8px 10px rgba(0,0,0,0.4); }
-}
-
-@keyframes kingGlowBlue {
-    0% { box-shadow: 0 0 5px #6b9fff, 0 5px 0 rgba(0,0,0,0.3), 0 8px 10px rgba(0,0,0,0.4); }
-    50% { box-shadow: 0 0 20px #6b9fff, 0 5px 0 rgba(0,0,0,0.3), 0 8px 10px rgba(0,0,0,0.4); }
-    100% { box-shadow: 0 0 5px #6b9fff, 0 5px 0 rgba(0,0,0,0.3), 0 8px 10px rgba(0,0,0,0.4); }
-}
-
-/* Taç işareti - TÜM DAMALAR İÇİN */
 .piece.team-A.king::after,
 .piece.team-B.king::after {
     content: '👑';
@@ -375,12 +629,6 @@ button:disabled {
     font-size: 1.5em;
     text-shadow: 2px 2px 2px black;
     z-index: 3;
-    animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.2); }
 }
 
 /* Hamle ipucu */
@@ -400,172 +648,11 @@ button:disabled {
 .move-hint:not(.capture-hint) {
     background: rgba(0, 255, 0, 0.4);
     border: 2px solid rgba(0, 200, 0, 0.8);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 .capture-hint {
     background: rgba(255, 0, 0, 0.4);
     border: 2px solid rgba(200, 0, 0, 0.8);
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.8); opacity: 0.6; }
-    50% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(0.8); opacity: 0.6; }
-}
-
-/* Çoklu yeme sayacı */
-.capture-count {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: gold;
-    color: black;
-    font-weight: bold;
-    font-size: 14px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid darkgoldenrod;
-    z-index: 10;
-    animation: bounceIn 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-@keyframes bounceIn {
-    0% { transform: scale(0); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-
-/* Patlama parçacıkları */
-.explosion-particle {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 2000;
-    animation: explode 0.5s ease-out forwards;
-}
-
-@keyframes explode {
-    0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(calc(cos(var(--angle)) * var(--distance)), calc(sin(var(--angle)) * var(--distance))) scale(0);
-        opacity: 0;
-    }
-}
-
-/* Konfeti efekti */
-.confetti {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    top: -10px;
-    z-index: 2000;
-    animation: confetti 3s ease-in forwards;
-    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
-}
-
-@keyframes confetti {
-    0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-    }
-}
-
-/* Yenen taşlar alanı */
-.captured-pieces-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    padding: 15px;
-    background: #2d1f15;
-    border-radius: 10px;
-    border: 2px solid #b8860b;
-    min-height: 100px;
-    gap: 20px;
-}
-
-.captured-pile {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    position: relative;
-    min-width: 120px;
-    padding: 10px;
-    background: rgba(0,0,0,0.2);
-    border-radius: 8px;
-}
-
-.captured-label {
-    position: absolute;
-    top: -20px;
-    left: 0;
-    font-size: 12px;
-    color: #ffd966;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Yenen taşlar - KIRMIZI */
-.captured-piece.team-A {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-    transition: all 0.3s ease;
-    margin: 2px;
-    background: radial-gradient(circle at 30% 30%, #ff6b6b, #8b0000);
-    color: white;
-}
-
-/* Yenen taşlar - MAVİ */
-.captured-piece.team-B {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
-    transition: all 0.3s ease;
-    margin: 2px;
-    background: radial-gradient(circle at 30% 30%, #6b9fff, #00008b);
-    color: white;
-}
-
-.captured-piece.team-A:hover,
-.captured-piece.team-B:hover {
-    transform: translateY(-8px) scale(1.15);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.5);
-    z-index: 10;
-}
-
-.my-captured {
-    justify-content: flex-end;
-}
-
-.opponent-captured {
-    justify-content: flex-start;
 }
 
 /* Bilgi paneli */
@@ -590,14 +677,6 @@ button:disabled {
     background: #2d1f15;
     border-radius: 10px;
     border: 2px solid #b8860b;
-    line-height: 1.4;
-    text-shadow: 1px 1px 2px black;
-    animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(-20px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
 }
 
 .players-list {
@@ -605,15 +684,6 @@ button:disabled {
     padding: 15px;
     border-radius: 10px;
     border: 2px solid #8b5a2b;
-}
-
-.players-list h3 {
-    color: #ffd966;
-    margin-bottom: 10px;
-    text-align: center;
-    font-size: 1.2rem;
-    border-bottom: 1px solid #b8860b;
-    padding-bottom: 5px;
 }
 
 .player-item {
@@ -625,40 +695,46 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     border: 1px solid #8b5a2b;
-    transition: all 0.2s ease;
 }
 
 .player-item.active {
     border: 2px solid gold;
     box-shadow: 0 0 15px gold;
-    background: #5a4739;
-    transform: scale(1.02);
 }
 
-.team-A-badge {
-    color: #ff6b6b;
-    font-weight: bold;
-    background: rgba(255, 107, 107, 0.2);
-    padding: 2px 8px;
-    border-radius: 10px;
-}
-
-.team-B-badge {
-    color: #6b9fff;
-    font-weight: bold;
-    background: rgba(107, 159, 255, 0.2);
-    padding: 2px 8px;
-    border-radius: 10px;
-}
-
-.game-status {
-    text-align: center;
-    font-size: 1.1rem;
-    padding: 10px;
+/* Yenen taşlar */
+.captured-pieces-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 15px;
     background: #2d1f15;
-    border-radius: 5px;
-    border: 2px dashed #b8860b;
-    font-weight: bold;
+    border-radius: 10px;
+    border: 2px solid #b8860b;
+    min-height: 100px;
+    gap: 20px;
+}
+
+.captured-piece.team-A,
+.captured-piece.team-B {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+}
+
+.captured-piece.team-A {
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #8b0000);
+    color: white;
+}
+
+.captured-piece.team-B {
+    background: radial-gradient(circle at 30% 30%, #6b9fff, #00008b);
+    color: white;
 }
 
 /* Oyun bitiş overlay */
@@ -674,12 +750,6 @@ button:disabled {
     align-items: center;
     z-index: 1000;
     backdrop-filter: blur(5px);
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
 
 .overlay-content {
@@ -691,272 +761,37 @@ button:disabled {
     box-shadow: 0 0 50px gold;
     max-width: 400px;
     width: 90%;
-    animation: slideUp 0.3s ease;
 }
 
-@keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-#winnerText {
-    color: gold;
-    font-size: 2rem;
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 0 #8b5a2b;
-    line-height: 1.3;
-    animation: celebration 2s infinite;
-}
-
-@keyframes celebration {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); text-shadow: 0 0 30px gold; }
-}
-
-.play-again-btn {
-    background: #228b22;
-    box-shadow: 0 5px 0 #0a5a0a;
-    margin-bottom: 10px;
-    width: 100%;
-    font-size: 1.2rem;
-}
-
-.play-again-btn:hover {
-    background: #2a9d2a;
-}
-
-.play-again-btn:active {
-    transform: translateY(5px);
-    box-shadow: none;
-}
-
-.back-btn {
-    background: #8b0000;
-    box-shadow: 0 5px 0 #5a0000;
-    width: 100%;
-    font-size: 1.2rem;
-}
-
-.back-btn:hover {
-    background: #a00000;
-}
-
-.back-btn:active {
-    transform: translateY(5px);
-    box-shadow: none;
-}
-
-/* Yükleme animasyonu */
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: gold;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Scrollbar stilleri */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #2d1f15;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #b8860b;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #ffd966;
-}
-
-/* Mobil uyumluluk */
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
+/* Responsive */
+@media (max-width: 968px) {
+    .main-content {
+        flex-direction: column;
     }
     
-    .game-header {
+    .chat-area {
+        width: 100%;
+        height: 400px;
+    }
+    
+    .toggle-chat-btn {
+        bottom: 10px;
+        right: 10px;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info {
         flex-direction: column;
         text-align: center;
     }
     
-    .info-panel {
-        min-width: 100%;
-    }
-    
-    button {
-        min-width: 120px;
-        padding: 10px 15px;
-        font-size: 1rem;
-    }
-    
-    .overlay-content {
+    .modal-content {
         padding: 20px;
     }
     
-    .overlay-content h2 {
-        font-size: 1.5rem;
-    }
-    
-    .piece.team-A.king::after,
-    .piece.team-B.king::after {
-        font-size: 1.2em;
-    }
-    
-    .captured-pieces-container {
+    .modal-buttons {
         flex-direction: column;
-        gap: 30px;
-    }
-    
-    .captured-pile {
-        justify-content: center;
-    }
-    
-    .captured-label {
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-}
-
-/* Dokunmatik ekranlar için optimizasyon */
-@media (hover: none) {
-    .piece.team-A:hover,
-    .piece.team-B:hover {
-        transform: none;
-    }
-    
-    button:hover {
-        filter: none;
-        transform: none;
-    }
-    
-    .square:hover {
-        filter: none;
-    }
-    
-    .captured-piece.team-A:hover,
-    .captured-piece.team-B:hover {
-        transform: none;
-    }
-}
-
-/* Yüksek çözünürlüklü ekranlar için */
-@media (min-width: 1920px) {
-    .container {
-        max-width: 1400px;
-    }
-    
-    .board {
-        width: min(700px, 70vw);
-        height: min(700px, 70vw);
-    }
-    
-    .piece.team-A.king::after,
-    .piece.team-B.king::after {
-        font-size: 2em;
-    }
-}
-
-/* Taş gölgesi */
-.piece.team-A,
-.piece.team-B {
-    filter: drop-shadow(0 4px 2px rgba(0,0,0,0.3));
-}
-
-/* Taş tıklama efekti */
-.piece.team-A:active,
-.piece.team-B:active {
-    transform: scale(0.95);
-}
-
-/* Animasyonlu taş hareketi için clone */
-.piece.team-A[style*="fixed"],
-.piece.team-B[style*="fixed"] {
-    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
-    z-index: 1000;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Çoklu yeme için özel efekt */
-.move-hint.capture-hint .capture-count {
-    background: #ff4444;
-    color: white;
-    border-color: #aa0000;
-    animation: warning 1s infinite;
-}
-
-@keyframes warning {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); background: #ff0000; }
-    100% { transform: scale(1); }
-}
-
-/* Kupa şeklinde yenen taşlar */
-.captured-pile {
-    position: relative;
-}
-
-.captured-pile::before {
-    content: '🏆';
-    position: absolute;
-    top: -25px;
-    font-size: 20px;
-    opacity: 0.5;
-}
-
-.my-captured::before {
-    right: 0;
-}
-
-.opponent-captured::before {
-    left: 0;
-}
-
-/* Oyun alanı geçiş animasyonu */
-#gameArea {
-    animation: fadeInScale 0.3s ease;
-}
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Mobil cihazlarda taşların daha rahat seçilmesi için */
-@media (max-width: 480px) {
-    .piece.team-A,
-    .piece.team-B {
-        width: 85%;
-        height: 85%;
-    }
-    
-    .move-hint {
-        width: 60%;
-        height: 60%;
-    }
-    
-    .capture-count {
-        width: 20px;
-        height: 20px;
-        font-size: 12px;
     }
 }
