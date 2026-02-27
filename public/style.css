@@ -25,13 +25,12 @@ body {
 
 .container {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    position: relative;
 }
 
 h1 {
@@ -100,10 +99,6 @@ h1 {
     box-shadow: none;
 }
 
-.edit-username-btn:active {
-    transform: scale(0.95);
-}
-
 .user-status {
     color: #4caf50;
     font-weight: bold;
@@ -156,12 +151,6 @@ h1 {
     text-align: center;
 }
 
-.modal-content input:focus {
-    outline: none;
-    border-color: gold;
-    box-shadow: 0 0 10px gold;
-}
-
 .modal-buttons {
     display: flex;
     gap: 10px;
@@ -190,11 +179,6 @@ h1 {
     box-shadow: 0 3px 0 #5a0000;
 }
 
-.modal-btn:active {
-    transform: translateY(3px);
-    box-shadow: none;
-}
-
 .room-controls {
     display: flex;
     gap: 10px;
@@ -214,7 +198,6 @@ h1 {
     width: 200px;
     font-weight: bold;
     letter-spacing: 2px;
-    transition: all 0.3s ease;
 }
 
 #roomCodeInput:focus {
@@ -248,13 +231,6 @@ button:active {
     box-shadow: none;
 }
 
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 5px 0 #5a3a1b;
-}
-
 .status {
     text-align: center;
     color: #ffd966;
@@ -267,233 +243,21 @@ button:disabled {
     border: 1px solid #b8860b;
 }
 
-/* Sohbet Butonu */
-.toggle-chat-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 100;
-    min-width: auto;
-    padding: 15px 25px;
-    background: #4a3729;
-    border: 2px solid gold;
-    box-shadow: 0 5px 0 #2d1f15;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: pulse-chat 2s infinite;
-}
-
-@keyframes pulse-chat {
-    0% { box-shadow: 0 5px 0 #2d1f15, 0 0 0 0 gold; }
-    50% { box-shadow: 0 5px 0 #2d1f15, 0 0 20px 5px gold; }
-    100% { box-shadow: 0 5px 0 #2d1f15, 0 0 0 0 gold; }
-}
-
-.toggle-chat-btn i {
-    font-size: 1.4rem;
-}
-
-/* Ana İçerik */
+/* Ana İçerik - Oyun ve Sohbet Yan Yana */
 .main-content {
     display: flex;
     gap: 20px;
-    position: relative;
+    min-height: 600px;
 }
 
 /* Oyun Alanı */
-#gameArea {
-    flex: 2;
+.game-area {
+    flex: 3;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* Sohbet Alanı */
-.chat-area {
-    flex: 1;
-    min-width: 300px;
-    background: #4a3729;
-    border-radius: 15px;
-    border: 2px solid #8b5a2b;
-    display: flex;
-    flex-direction: column;
-    height: 600px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    animation: slideIn 0.3s ease;
-}
-
-.chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: #2d1f15;
-    border-radius: 13px 13px 0 0;
-    border-bottom: 2px solid gold;
-}
-
-.chat-header h3 {
-    color: gold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.2rem;
-}
-
-.close-chat-btn {
-    min-width: auto;
-    padding: 5px 10px;
-    background: #8b0000;
-    box-shadow: 0 3px 0 #5a0000;
-    font-size: 1rem;
-}
-
-.close-chat-btn:hover {
-    background: #a00000;
-}
-
-.chat-messages {
-    flex: 1;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: rgba(0,0,0,0.2);
-}
-
-.chat-welcome {
-    text-align: center;
-    color: #b8860b;
-    padding: 20px;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.chat-welcome i {
-    font-size: 1.5rem;
-    color: gold;
-}
-
-.message {
-    padding: 8px 12px;
-    border-radius: 10px;
-    max-width: 85%;
-    word-wrap: break-word;
-    animation: messageAppear 0.2s ease;
-}
-
-@keyframes messageAppear {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.message.own-message {
-    align-self: flex-end;
-    background: #2d5a3a;
-    color: white;
-    border: 1px solid #4caf50;
-}
-
-.message.other-message {
-    align-self: flex-start;
-    background: #4a3729;
-    color: #ffd966;
-    border: 1px solid #b8860b;
-}
-
-.message-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    font-size: 0.8rem;
-}
-
-.message-sender {
-    font-weight: bold;
-    color: gold;
-}
-
-.message-time {
-    color: #b8860b;
-    font-size: 0.7rem;
-}
-
-.message-content {
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
-.chat-input-area {
-    display: flex;
-    padding: 15px;
-    gap: 10px;
-    background: #2d1f15;
-    border-radius: 0 0 13px 13px;
-    border-top: 1px solid #b8860b;
-}
-
-#chatInput {
-    flex: 1;
-    padding: 10px;
-    border: 2px solid #b8860b;
-    border-radius: 8px;
-    background: #f0e6d2;
-    font-size: 1rem;
-}
-
-#chatInput:focus {
-    outline: none;
-    border-color: gold;
-    box-shadow: 0 0 10px gold;
-}
-
-.send-chat-btn {
-    min-width: auto;
-    padding: 10px 15px;
-    background: #228b22;
-    box-shadow: 0 3px 0 #0a5a0a;
-    font-size: 1.1rem;
-}
-
-.send-chat-btn:hover {
-    background: #2a9d2a;
-}
-
-.chat-info {
-    padding: 5px 15px 10px;
-    color: #b8860b;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #2d1f15;
-}
-
-/* Scrollbar stilleri */
-.chat-messages::-webkit-scrollbar {
-    width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-    background: #2d1f15;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-    background: #b8860b;
-    border-radius: 3px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-    background: #ffd966;
-}
-
-/* Oyun Alanı stilleri (önceki CSS'ler aynen kalacak) */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -655,6 +419,24 @@ button:disabled {
     border: 2px solid rgba(200, 0, 0, 0.8);
 }
 
+.capture-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: gold;
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid darkgoldenrod;
+    z-index: 10;
+}
+
 /* Bilgi paneli */
 .info-panel {
     background: #4a3729;
@@ -737,6 +519,147 @@ button:disabled {
     color: white;
 }
 
+/* ===== SOHBET SIDEBAR ===== */
+.chat-sidebar {
+    flex: 1;
+    min-width: 300px;
+    background: #4a3729;
+    border-radius: 15px;
+    border: 2px solid #8b5a2b;
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.chat-header {
+    padding: 15px;
+    background: #2d1f15;
+    border-radius: 13px 13px 0 0;
+    border-bottom: 2px solid gold;
+}
+
+.chat-header h3 {
+    color: gold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.2rem;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(0,0,0,0.2);
+}
+
+.chat-welcome {
+    text-align: center;
+    color: #b8860b;
+    padding: 20px;
+    font-style: italic;
+}
+
+.message {
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 95%;
+    word-wrap: break-word;
+    animation: messageAppear 0.2s ease;
+}
+
+@keyframes messageAppear {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.own-message {
+    align-self: flex-end;
+    background: #2d5a3a;
+    color: white;
+    border: 1px solid #4caf50;
+}
+
+.message.other-message {
+    align-self: flex-start;
+    background: #2d1f15;
+    color: #ffd966;
+    border: 1px solid #b8860b;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    gap: 10px;
+}
+
+.message-sender {
+    font-weight: bold;
+    color: gold;
+}
+
+.message-time {
+    color: #b8860b;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+.message-content {
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+    background: #2d1f15;
+    border-radius: 0 0 13px 13px;
+    border-top: 1px solid #b8860b;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #b8860b;
+    border-radius: 8px;
+    background: #f0e6d2;
+    font-size: 1rem;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: gold;
+    box-shadow: 0 0 10px gold;
+}
+
+.send-chat-btn {
+    min-width: 50px;
+    background: #228b22;
+    box-shadow: 0 3px 0 #0a5a0a;
+    font-size: 1.1rem;
+}
+
+/* Scrollbar */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #2d1f15;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #b8860b;
+    border-radius: 3px;
+}
+
 /* Oyun bitiş overlay */
 .game-overlay {
     position: fixed;
@@ -763,35 +686,44 @@ button:disabled {
     width: 90%;
 }
 
+#winnerText {
+    color: gold;
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.play-again-btn {
+    background: #228b22;
+    box-shadow: 0 5px 0 #0a5a0a;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.back-btn {
+    background: #8b0000;
+    box-shadow: 0 5px 0 #5a0000;
+    width: 100%;
+}
+
 /* Responsive */
 @media (max-width: 968px) {
     .main-content {
         flex-direction: column;
     }
     
-    .chat-area {
+    .chat-sidebar {
         width: 100%;
         height: 400px;
-    }
-    
-    .toggle-chat-btn {
-        bottom: 10px;
-        right: 10px;
-        padding: 10px 15px;
     }
 }
 
 @media (max-width: 480px) {
     .user-info {
         flex-direction: column;
-        text-align: center;
     }
     
-    .modal-content {
-        padding: 20px;
-    }
-    
-    .modal-buttons {
+    .message-header {
         flex-direction: column;
+        gap: 2px;
     }
-}
+                               }
