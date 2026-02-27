@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sohbet - Online Dama</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ========== TÜM STİLLER TEK DOSYADA ========== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a472a, #2d5a3a);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        /* Ana Sohbet Konteynırı */
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid #8b5a2b;
+        }
+
+        /* Başlık */
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #b8860b;
+        }
+
+        .chat-header h2 {
+            color: #ffd966;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 0 #8b5a2b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header h2 i {
+            color: gold;
+        }
+
+        /* Kullanıcı Bilgileri */
+        .user-info {
+            background: #4a3729;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #8b5a2b;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .username-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #2d1f15;
+            padding: 8px 15px;
+            border-radius: 8px;
+            flex: 1;
+        }
+
+        .username-label {
+            color: #b8860b;
+            font-weight: bold;
+        }
+
+        #usernameDisplay {
+            color: gold;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-width: 120px;
+        }
+
+        .edit-username-btn {
+            background: none;
+            border: none;
+            color: #b8860b;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .edit-username-btn:hover {
+            color: gold;
+            transform: scale(1.1);
+        }
+
+        .user-status {
+            color: #4caf50;
+            font-weight: bold;
+            background: #2d1f15;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #4caf50;
+            font-size: 0.9rem;
+        }
+
+        /* Modal (Alert YOK) */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: #4a3729;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid gold;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: gold;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #b8860b;
+            border-radius: 8px;
+            background: #f0e6d2;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: gold;
+            box-shadow: 0 0 10px gold;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            min-width: 80px;
+        }
+
+        .save-btn {
+            background: #228b22;
+            color: white;
+            box-shadow: 0 3px 0 #0a5a0a;
+        }
+
+        .cancel-btn {
+            background: #8b0000;
+            color: white;
+            box-shadow: 0 3px 0 #5a0000;
+        }
+
+        .modal-btn:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+
+        /* Sohbet Mesajları Alanı - DÜZELTİLDİ (kaydırmalı) */
+        .chat-messages {
+            background: #2d1f15;
+            border-radius: 10px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #8b5a2b;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar stilleri */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #4a3729;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #b8860b;
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #ffd966;
+        }
+
+        /* Mesaj Balonları */
+        .message {
+            padding: 10px 12px;
+            border-radius: 12px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: messageAppear 0.2s ease;
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.own-message {
+            align-self: flex-end;
+            background: #2d5a3a;
+            color: white;
+            border: 1px solid #4caf50;
+        }
+
+        .message.other-message {
+            align-self: flex-start;
+            background: #4a3729;
+            color: #ffd966;
+            border: 1px solid #b8860b;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            gap: 15px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            color: gold;
+        }
+
+        .message-time {
+            color: #b8860b;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .message-content {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        /* Giriş Alanı */
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            background: #4a3729;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #8b5a2b;
+        }
+
+        #chatInput {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #b8860b;
+            border-radius: 8px;
+            background: #f0e6d2;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        #chatInput:focus {
+            outline: none;
+            border-color: gold;
+            box-shadow: 0 0 10px gold;
+        }
+
+        .send-chat-btn {
+            min-width: 50px;
+            background: #228b22;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 0 #0a5a0a;
+            transition: all 0.1s ease;
+        }
+
+        .send-chat-btn:hover {
+            background: #2a9d2a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 0 #0a5a0a;
+        }
+
+        .send-chat-btn:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+
+        /* Bilgi Alanı - ARTIK DEMO YAZISI YOK */
+        .chat-footer {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #2d1f15;
+            border-radius: 8px;
+            border: 1px solid #b8860b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #b8860b;
+            font-size: 0.9rem;
+        }
+
+        .chat-footer i {
+            color: gold;
+        }
+
+        /* Bağlantı Butonu */
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #b8860b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: gold;
+            text-decoration: underline;
+        }
+
+        .back-link i {
+            margin-right: 5px;
+        }
+
+        /* Mobil uyumluluk */
+        @media (max-width: 480px) {
+            .chat-container {
+                padding: 15px;
+            }
+
+            .chat-header h2 {
+                font-size: 1.4rem;
+            }
+
+            .user-info {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .username-section {
+                width: 100%;
+            }
+
+            .message {
+                max-width: 95%;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        /* Yükleme animasyonu */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: gold;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Sistem mesajları */
+        .system-message {
+            text-align: center;
+            color: #b8860b;
+            font-style: italic;
+            padding: 5px;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Başlık -->
+        <div class="chat-header">
+            <h2>
+                <i class="fas fa-comments"></i> 
+                Sohbet
+            </h2>
+            <div class="user-status" id="connectionStatus">🟢 Bağlı</div>
+        </div>
+
+        <!-- Kullanıcı Bilgileri -->
+        <div class="user-info">
+            <div class="username-section">
+                <span class="username-label">👤 İsim:</span>
+                <span id="usernameDisplay">Oyuncu-</span>
+                <button id="editUsernameBtn" class="edit-username-btn">
+                    <i class="fas fa-pencil-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- İsim Düzenleme Modalı -->
+        <div id="editUsernameModal" class="modal">
+            <div class="modal-content">
+                <h3><i class="fas fa-user-edit"></i> İsmini Değiştir</h3>
+                <input type="text" id="newUsernameInput" placeholder="Yeni ismin..." maxlength="20">
+                <div class="modal-buttons">
+                    <button id="saveUsernameBtn" class="modal-btn save-btn">Kaydet</button>
+                    <button id="cancelUsernameBtn" class="modal-btn cancel-btn">İptal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sohbet Mesajları - KAYDIRMALI ALAN -->
+        <div class="chat-messages" id="chatMessages">
+            <!-- Mesajlar buraya gelecek -->
+            <div class="system-message">
+                <i class="fas fa-info-circle"></i> Sohbete hoşgeldin!
+            </div>
+        </div>
+
+        <!-- Mesaj Gönderme Alanı -->
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Mesajını yaz..." maxlength="200">
+            <button id="sendChatBtn" class="send-chat-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+
+        <!-- Alt Bilgi - DEMO YAZISI YOK, SADECE KISA BİLGİ -->
+        <div class="chat-footer">
+            <i class="fas fa-globe"></i>
+            <span>Genel sohbet - Herkes görür</span>
+        </div>
+
+        <!-- Ana Sayfaya Dön Linki -->
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
+        </a>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // ========== SOHBET JAVASCRIPT ==========
+        
+        const socket = io();
+        
+        // DOM elementleri
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        const editUsernameBtn = document.getElementById('editUsernameBtn');
+        const editUsernameModal = document.getElementById('editUsernameModal');
+        const newUsernameInput = document.getElementById('newUsernameInput');
+        const saveUsernameBtn = document.getElementById('saveUsernameBtn');
+        const cancelUsernameBtn = document.getElementById('cancelUsernameBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+        const connectionStatus = document.getElementById('connectionStatus');
+        
+        // Kullanıcı adını localStorage'dan al veya oluştur
+        let username = localStorage.getItem('dama_username');
+        if (!username) {
+            const randomNum = Math.floor(Math.random() * 1000) + 1;
+            username = `Oyuncu-${randomNum}`;
+            localStorage.setItem('dama_username', username);
+        }
+        usernameDisplay.textContent = username;
+        
+        // Socket bağlantı durumu
+        socket.on('connect', () => {
+            connectionStatus.innerHTML = '🟢 Bağlı';
+            connectionStatus.style.color = '#4caf50';
+            socket.emit('setUsername', username);
+            addSystemMessage('✅ Sohbete bağlandın');
+        });
+        
+        socket.on('disconnect', () => {
+            connectionStatus.innerHTML = '🔴 Bağlantı Koptu';
+            connectionStatus.style.color = '#ff6b6b';
+            addSystemMessage('❌ Bağlantı koptu, yeniden bağlanılıyor...');
+        });
+        
+        socket.on('connect_error', () => {
+            connectionStatus.innerHTML = '🟠 Bağlantı Hatası';
+            connectionStatus.style.color = '#ffa500';
+        });
+        
+        // Sistem mesajı ekle
+        function addSystemMessage(text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'system-message';
+            msgDiv.innerHTML = `<i class="fas fa-info-circle"></i> ${text}`;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // İsim değiştirme işlemleri
+        editUsernameBtn.addEventListener('click', () => {
+            newUsernameInput.value = username;
+            editUsernameModal.style.display = 'flex';
+        });
+        
+        saveUsernameBtn.addEventListener('click', () => {
+            const newName = newUsernameInput.value.trim();
+            if (newName && newName.length <= 20) {
+                username = newName;
+                usernameDisplay.textContent = username;
+                localStorage.setItem('dama_username', username);
+                socket.emit('setUsername', username);
+                editUsernameModal.style.display = 'none';
+                addSystemMessage(`✅ İsmin "${username}" olarak değiştirildi`);
+            }
+        });
+        
+        cancelUsernameBtn.addEventListener('click', () => {
+            editUsernameModal.style.display = 'none';
+        });
+        
+        // Enter tuşu ile kaydet
+        newUsernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveUsernameBtn.click();
+            }
+        });
+        
+        // Modal dışına tıklayınca kapat
+        window.addEventListener('click', (e) => {
+            if (e.target === editUsernameModal) {
+                editUsernameModal.style.display = 'none';
+            }
+        });
+        
+        // Mesaj gönderme
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                socket.emit('chatMessage', {
+                    username: username,
+                    message: message,
+                    room: 'global'
+                });
+                chatInput.value = '';
+            }
+        }
+        
+        sendChatBtn.addEventListener('click', sendMessage);
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Gelen mesajlar
+        socket.on('chatMessage', (data) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${data.username === username ? 'own-message' : 'other-message'}`;
+            
+            const time = new Date().toLocaleTimeString('tr-TR', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            
+            // XSS koruması
+            const escapedMessage = escapeHtml(data.message);
+            const escapedUsername = escapeHtml(data.username);
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <span class="message-sender">${escapedUsername}</span>
+                    <span class="message-time">${time}</span>
+                </div>
+                <div class="message-content">${escapedMessage}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+        
+        // HTML escape fonksiyonu (XSS koruması)
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Sayfa kapanırken
+        window.addEventListener('beforeunload', () => {
+            socket.disconnect();
+        });
+        
+        // Sayfa yüklendiğinde mesaj kutusuna odaklan
+        chatInput.focus();
+    </script>
+</body>
+  </html>
