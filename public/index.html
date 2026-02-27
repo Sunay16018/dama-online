@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>1vs1 Online Dama - Sohbetli</title>
+    <title>1vs1 Online Dama</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -15,7 +15,7 @@
         <div class="user-info">
             <div class="username-container">
                 <span class="username-label">👤 İsim:</span>
-                <span id="usernameDisplay" class="username-display">Oyuncu-1234</span>
+                <span id="usernameDisplay" class="username-display">Oyuncu-</span>
                 <button id="editUsernameBtn" class="edit-username-btn">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
@@ -23,7 +23,7 @@
             <div id="userStatus" class="user-status">🟢 Çevrimiçi</div>
         </div>
 
-        <!-- İsim Düzenleme Modalı (Alert YOK) -->
+        <!-- İsim Düzenleme Modalı -->
         <div id="editUsernameModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <h3>İsmini Değiştir</h3>
@@ -35,6 +35,74 @@
             </div>
         </div>
         
+        <div class="room-controls" id="lobbyControls">
+            <input type="text" id="roomCodeInput" placeholder="ODA KODU" maxlength="6" autocomplete="off">
+            <button id="createRoomBtn">🎲 ODA OLUŞTUR</button>
+            <button id="joinRoomBtn">🚪 ODAYA KATIL</button>
+        </div>
+        
+        <div id="status" class="status">🔌 Sunucuya bağlanıyor...</div>
+        
+        <!-- ANA İÇERİK - OYUN VE SOHBET YAN YANA -->
+        <div class="main-content">
+            <!-- OYUN ALANI -->
+            <div id="gameArea" style="display: none;" class="game-area">
+                <div class="game-header">
+                    <div id="roomCode" class="room-code-badge"></div>
+                    <div class="player-indicator" id="playerTeam"></div>
+                    <button id="leaveRoomBtn" class="leave-btn">🏠 ANA SAYFA</button>
+                </div>
+                
+                <div class="game-content">
+                    <div class="board-wrapper">
+                        <div class="board" id="board"></div>
+                    </div>
+                    
+                    <div class="info-panel">
+                        <div id="turnIndicator" class="turn-indicator">---</div>
+                        <div id="players" class="players-list"></div>
+                        <div id="gameStatus" class="game-status"></div>
+                        <div id="capturedPieces" class="captured-pieces-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SADECE GENEL SOHBET - HEP GÖRÜNÜR -->
+            <div class="chat-sidebar" id="chatSidebar">
+                <div class="chat-header">
+                    <h3><i class="fas fa-comments"></i> Genel Sohbet</h3>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Mesajlar buraya gelecek -->
+                    <div class="chat-welcome">
+                        <i class="fas fa-hand-wave"></i> Sohbete hoşgeldin!
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Mesaj yaz..." maxlength="200">
+                    <button id="sendChatBtn" class="send-chat-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Oyun Bitiş Overlay -->
+        <div id="gameOverlay" class="game-overlay" style="display: none;">
+            <div class="overlay-content">
+                <h2 id="winnerText"></h2>
+                <button id="playAgainBtn" class="play-again-btn">🔄 TEKRAR OYNA</button>
+                <button id="backToLobbyBtn" class="back-btn">🏠 ANA SAYFA</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>        
         <div class="room-controls" id="lobbyControls">
             <input type="text" id="roomCodeInput" placeholder="ODA KODU" maxlength="6" autocomplete="off">
             <button id="createRoomBtn">🎲 ODA OLUŞTUR</button>
