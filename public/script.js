@@ -15,6 +15,20 @@ const roomCodeInput = document.getElementById('roomCodeInput');
 const playerTeam = document.getElementById('playerTeam');
 const capturedPiecesEl = document.getElementById('capturedPieces');
 
+// Sohbet elementleri
+const chatArea = document.getElementById('chatArea');
+const toggleChatBtn = document.getElementById('toggleChatBtn');
+const closeChatBtn = document.getElementById('closeChatBtn');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendChatBtn = document.getElementById('sendChatBtn');
+const usernameDisplay = document.getElementById('usernameDisplay');
+const editUsernameBtn = document.getElementById('editUsernameBtn');
+const editUsernameModal = document.getElementById('editUsernameModal');
+const newUsernameInput = document.getElementById('newUsernameInput');
+const saveUsernameBtn = document.getElementById('saveUsernameBtn');
+const cancelUsernameBtn = document.getElementById('cancelUsernameBtn');
+
 // Oyun değişkenleri
 let currentRoom = null;
 let myTeam = null;
@@ -28,6 +42,15 @@ let capturedA = [];
 let capturedB = [];
 let isAnimating = false;
 let animationQueue = [];
+
+// Kullanıcı değişkenleri
+let username = localStorage.getItem('dama_username');
+if (!username) {
+    const randomNum = Math.floor(Math.random() * 1000) + 1;
+    username = `Oyuncu-${randomNum}`;
+    localStorage.setItem('dama_username', username);
+}
+usernameDisplay.textContent = username;
 
 // Sayfa yenilendiğinde session'dan oda kodunu al
 const savedRoom = sessionStorage.getItem('currentRoom');
@@ -46,6 +69,9 @@ socket.on('connect', () => {
     console.log('✅ Bağlandı:', socket.id);
     statusEl.textContent = '✅ Sunucuya bağlandı';
     
+    // Kullanıcı adını sunucuya bildir
+    socket.emit('setUsername', username);
+    
     if (savedRoom && !currentRoom) {
         socket.emit('joinRoom', savedRoom);
     }
@@ -54,6 +80,101 @@ socket.on('connect', () => {
 socket.on('connect_error', () => {
     statusEl.textContent = '❌ Sunucuya bağlanılamıyor';
 });
+
+// İsim değiştirme işlemleri
+editUsernameBtn.addEventListener('click', () => {
+    newUsernameInput.value = username;
+    editUsernameModal.style.display = 'flex';
+});
+
+saveUsernameBtn.addEventListener('click', () => {
+    const newName = newUsernameInput.value.trim();
+    if (newName && newName.length <= 20) {
+        username = newName;
+        usernameDisplay.textContent = username;
+        localStorage.setItem('dama_username', username);
+        socket.emit('setUsername', username);
+        editUsernameModal.style.display = 'none';
+        statusEl.textContent = `✅ İsmin "${username}" olarak değiştirildi`;
+    }
+});
+
+cancelUsernameBtn.addEventListener('click', () => {
+    editUsernameModal.style.display = 'none';
+});
+
+// Enter tuşu ile kaydet
+newUsernameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        saveUsernameBtn.click();
+    }
+});
+
+// Modal dışına tıklayınca kapat
+window.addEventListener('click', (e) => {
+    if (e.target === editUsernameModal) {
+        editUsernameModal.style.display = 'none';
+    }
+});
+
+// Sohbet butonları
+toggleChatBtn.addEventListener('click', () => {
+    chatArea.style.display = 'flex';
+    toggleChatBtn.style.display = 'none';
+    chatInput.focus();
+});
+
+closeChatBtn.addEventListener('click', () => {
+    chatArea.style.display = 'none';
+    toggleChatBtn.style.display = 'flex';
+});
+
+// Mesaj gönderme
+function sendMessage() {
+    const message = chatInput.value.trim();
+    if (message) {
+        socket.emit('chatMessage', {
+            username: username,
+            message: message,
+            room: 'global'
+        });
+        chatInput.value = '';
+    }
+}
+
+sendChatBtn.addEventListener('click', sendMessage);
+
+chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+// Gelen sohbet mesajları
+socket.on('chatMessage', (data) => {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${data.username === username ? 'own-message' : 'other-message'}`;
+    
+    const time = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    
+    messageDiv.innerHTML = `
+        <div class="message-header">
+            <span class="message-sender">${data.username}</span>
+            <span class="message-time">${time}</span>
+        </div>
+        <div class="message-content">${escapeHtml(data.message)}</div>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+});
+
+// HTML escape fonksiyonu (XSS koruması)
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 // Butonlar
 document.getElementById('createRoomBtn').addEventListener('click', () => {
@@ -90,7 +211,6 @@ function leaveRoom() {
     gameArea.style.display = 'none';
     lobbyControls.style.display = 'flex';
     statusEl.textContent = '🏠 Ana sayfaya döndünüz';
-    window.location.reload();
 }
 
 // Oda oluşturuldu
@@ -134,13 +254,12 @@ socket.on('gameStart', (data) => {
     updateCapturedPieces();
 });
 
-// Tahta güncelleme (animasyonlu)
+// Tahta güncelleme
 socket.on('updateBoard', (data) => {
     const { board, turn: newTurn, capturedA: newCapturedA, capturedB: newCapturedB, lastMove, perspective: newPerspective } = data;
     
     perspective = newPerspective;
     
-    // Animasyon varsa sıraya koy
     if (lastMove) {
         animateMove(lastMove, board, () => {
             boardState = board;
@@ -177,7 +296,6 @@ function animateMove(move, newBoard, callback) {
     const [fromRow, fromCol] = move.from;
     const [toRow, toCol] = move.to;
     
-    // Taşı bul
     const pieceElement = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"] .piece`);
     if (!pieceElement) {
         isAnimating = false;
@@ -185,7 +303,6 @@ function animateMove(move, newBoard, callback) {
         return;
     }
     
-    // Hedef kareyi bul
     const targetSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
     if (!targetSquare) {
         isAnimating = false;
@@ -193,7 +310,6 @@ function animateMove(move, newBoard, callback) {
         return;
     }
     
-    // Animasyon için clone oluştur
     const clone = pieceElement.cloneNode(true);
     clone.style.position = 'fixed';
     clone.style.width = pieceElement.offsetWidth + 'px';
@@ -207,10 +323,8 @@ function animateMove(move, newBoard, callback) {
     document.body.appendChild(clone);
     pieceElement.style.opacity = '0';
     
-    // Hedef pozisyon
     const targetRect = targetSquare.getBoundingClientRect();
     
-    // Yeme varsa patlama efekti
     if (move.capture) {
         const [captureRow, captureCol] = move.capture;
         const capturedPiece = document.querySelector(`[data-row="${captureRow}"][data-col="${captureCol}"] .piece`);
@@ -221,21 +335,18 @@ function animateMove(move, newBoard, callback) {
         }
     }
     
-    // Hareket animasyonu
     setTimeout(() => {
         clone.style.left = targetRect.left + 'px';
         clone.style.top = targetRect.top + 'px';
         clone.style.transform = 'scale(1.1)';
     }, 10);
     
-    // Animasyon bitince
     setTimeout(() => {
         clone.remove();
         pieceElement.style.opacity = '1';
         isAnimating = false;
         callback();
         
-        // Sıradaki animasyon varsa oynat
         if (animationQueue.length > 0) {
             const next = animationQueue.shift();
             animateMove(next.move, next.newBoard, next.callback);
@@ -353,10 +464,7 @@ function renderBoard() {
                 square.appendChild(pieceDiv);
             }
             
-            // Hamle ipuçları
             const allMoves = [...validMoves.normal, ...validMoves.captures];
-            
-            // Her hedef kare için kaç kez geldiğini say
             const moveCounts = {};
             allMoves.forEach(move => {
                 const key = `${move.to[0]},${move.to[1]}`;
@@ -405,7 +513,6 @@ function updateCapturedPieces() {
     const myCaptured = myTeam === 'A' ? capturedB : capturedA;
     const opponentCaptured = myTeam === 'A' ? capturedA : capturedB;
     
-    // Benim yediğim taşlar (sağda)
     const myCapturedDiv = document.createElement('div');
     myCapturedDiv.className = 'captured-pile my-captured';
     myCapturedDiv.innerHTML = '<div class="captured-label">YEDİKLERİN</div>';
@@ -418,7 +525,6 @@ function updateCapturedPieces() {
         myCapturedDiv.appendChild(pieceIcon);
     });
     
-    // Rakibin yediği taşlar (solda)
     const opponentCapturedDiv = document.createElement('div');
     opponentCapturedDiv.className = 'captured-pile opponent-captured';
     opponentCapturedDiv.innerHTML = '<div class="captured-label">YEDİKLERİ</div>';
@@ -500,22 +606,4 @@ function updateTurnInfo() {
     const meDiv = document.createElement('div');
     meDiv.className = `player-item ${turn === myTeam ? 'active' : ''}`;
     meDiv.innerHTML = `
-        <span>${turn === myTeam ? '▶️ ' : ''}${myTeam === 'A' ? '🔴' : '🔵'} ${myTeam === 'A' ? 'Kırmızı' : 'Mavi'} (Sen)</span>
-        <span class="${myTeam === 'A' ? 'team-A-badge' : 'team-B-badge'}">${myTeam}</span>
-    `;
-    playersEl.appendChild(meDiv);
-    
-    const rakipDiv = document.createElement('div');
-    rakipDiv.className = `player-item ${turn === opponentTeam ? 'active' : ''}`;
-    rakipDiv.innerHTML = `
-        <span>${turn === opponentTeam ? '▶️ ' : ''}${opponentTeam === 'A' ? '🔴' : '🔵'} ${opponentTeam === 'A' ? 'Kırmızı' : 'Mavi'} (Rakip)</span>
-        <span class="${opponentTeam === 'A' ? 'team-A-badge' : 'team-B-badge'}">${opponentTeam}</span>
-    `;
-    playersEl.appendChild(rakipDiv);
-    
-    if (validMoves.captures.length > 0) {
-        gameStatus.innerHTML = '⚔️ YEME MÜMKÜN (Zorunlu değil)';
-    } else {
-        gameStatus.innerHTML = gameWinner ? '🏁 OYUN BİTTİ' : '🎮 OYUN DEVAM EDİYOR';
-    }
-}
+        <span>${turn === myTeam ? '▶️ ' : ''}${myTeam === 'A' ? 
