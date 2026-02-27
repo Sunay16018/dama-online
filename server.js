@@ -10,26 +10,23 @@ const io = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"]
     },
-    // Render.com için önemli ayarlar
     transports: ['websocket', 'polling'],
     pingTimeout: 60000,
     pingInterval: 25000
 });
 
-// Statik dosyaları serve et
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ana route - index.html'i gönder
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Health check endpoint (Render.com için)
 app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
 
 const rooms = {};
+const users = {}; // { socketId: username }
 
 function generateRoomCode() {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -133,20 +130,39 @@ function checkWinner(board) {
     return null;
 }
 
-// Periyodik temizlik (Render.com'da boş odaları temizle)
+// Periyodik temizlik
 setInterval(() => {
     for (const roomCode in rooms) {
         const room = rooms[roomCode];
-        // 1 saatten eski boş odaları temizle
         if (room.players.length === 0 && Date.now() - room.createdAt > 3600000) {
             delete rooms[roomCode];
             console.log(`🧹 Boş oda temizlendi: ${roomCode}`);
         }
     }
-}, 300000); // 5 dakikada bir
+}, 300000);
 
 io.on('connection', (socket) => {
-    console.log('✅ Bağlantı:', socket.id, 'IP:', socket.handshake.address);
+    console.log('✅ Bağlantı:', socket.id);
+
+    // Kullanıcı adı ayarla
+    socket.on('setUsername', (username) => {
+        users[socket.id] = username;
+        console.log(`👤 Kullanıcı: ${username} (${socket.id})`);
+    });
+
+    // Sohbet mesajı
+    socket.on('chatMessage', (data) => {
+        const username = data.username || users[socket.id] || 'Anonim';
+        const message = data.message.substring(0, 200); // 200 karakter sınırı
+        
+        console.log(`💬 ${username}: ${message}`);
+        
+        // Global sohbet - herkese gönder
+        io.emit('chatMessage', {
+            username: username,
+            message: message
+        });
+    });
 
     socket.on('createRoom', () => {
         try {
@@ -340,23 +356,26 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('❌ Ayrıldı:', socket.id);
+        const username = users[socket.id] || 'Bilinmeyen';
+        console.log(`❌ Ayrıldı: ${username} (${socket.id})`);
+        
+        // Kullanıcıyı sil
+        delete users[socket.id];
+        
         for (const roomCode in rooms) {
             const room = rooms[roomCode];
             const index = room.players.findIndex(p => p.id === socket.id);
             if (index !== -1) {
                 room.players.splice(index, 1);
                 io.to(roomCode).emit('playerLeft', socket.id);
-                console.log(`👋 Oyuncu ayrıldı: ${roomCode} - Kalan: ${room.players.length}`);
                 
                 if (room.players.length === 0) {
-                    // Boş odayı hemen silme, biraz bekle
                     setTimeout(() => {
                         if (rooms[roomCode] && rooms[roomCode].players.length === 0) {
                             delete rooms[roomCode];
                             console.log(`🗑️ Boş oda silindi: ${roomCode}`);
                         }
-                    }, 60000); // 1 dakika bekle
+                    }, 60000);
                 }
                 break;
             }
@@ -364,7 +383,6 @@ io.on('connection', (socket) => {
     });
 });
 
-// PORT'u Render.com'un verdiği port olarak ayarla
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Sunucu http://0.0.0.0:${PORT} adresinde çalışıyor...`);
