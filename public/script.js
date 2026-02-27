@@ -606,4 +606,21 @@ function updateTurnInfo() {
     const meDiv = document.createElement('div');
     meDiv.className = `player-item ${turn === myTeam ? 'active' : ''}`;
     meDiv.innerHTML = `
-        <span>${turn === myTeam ? '▶️ ' : ''}${myTeam === 'A' ? 
+        <span>${turn === myTeam ? '▶️ ' : ''}${myTeam === 'A' ? 'team-A-badge' : 'team-B-badge'}">${myTeam}</span>
+    `;
+    playersEl.appendChild(meDiv);
+    
+    const rakipDiv = document.createElement('div');
+    rakipDiv.className = `player-item ${turn === opponentTeam ? 'active' : ''}`;
+    rakipDiv.innerHTML = `
+        <span>${turn === opponentTeam ? '▶️ ' : ''}${opponentTeam === 'A' ? '🔴' : '🔵'} ${opponentTeam === 'A' ? 'Kırmızı' : 'Mavi'} (Rakip)</span>
+        <span class="${opponentTeam === 'A' ? 'team-A-badge' : 'team-B-badge'}">${opponentTeam}</span>
+    `;
+    playersEl.appendChild(rakipDiv);
+    
+    if (validMoves.captures.length > 0) {
+        gameStatus.innerHTML = '⚔️ YEME MÜMKÜN (Zorunlu değil)';
+    } else {
+        gameStatus.innerHTML = gameWinner ? '🏁 OYUN BİTTİ' : '🎮 OYUN DEVAM EDİYOR';
+    }
+}
