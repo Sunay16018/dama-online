@@ -1,12 +1,33 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    },
+    // Render.com için önemli ayarlar
+    transports: ['websocket', 'polling'],
+    pingTimeout: 60000,
+    pingInterval: 25000
+});
 
-app.use(express.static('public'));
+// Statik dosyaları serve et
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Ana route - index.html'i gönder
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Health check endpoint (Render.com için)
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
 
 const rooms = {};
 
@@ -112,8 +133,20 @@ function checkWinner(board) {
     return null;
 }
 
+// Periyodik temizlik (Render.com'da boş odaları temizle)
+setInterval(() => {
+    for (const roomCode in rooms) {
+        const room = rooms[roomCode];
+        // 1 saatten eski boş odaları temizle
+        if (room.players.length === 0 && Date.now() - room.createdAt > 3600000) {
+            delete rooms[roomCode];
+            console.log(`🧹 Boş oda temizlendi: ${roomCode}`);
+        }
+    }
+}, 300000); // 5 dakikada bir
+
 io.on('connection', (socket) => {
-    console.log('✅ Bağlantı:', socket.id);
+    console.log('✅ Bağlantı:', socket.id, 'IP:', socket.handshake.address);
 
     socket.on('createRoom', () => {
         try {
@@ -124,12 +157,13 @@ io.on('connection', (socket) => {
                 turn: 'A',
                 gameStarted: false,
                 winner: null,
-                capturedA: [], // Kırmızı'nın yediği taşlar
-                capturedB: []  // Mavi'nin yediği taşlar
+                capturedA: [],
+                capturedB: [],
+                createdAt: Date.now()
             };
             socket.join(roomCode);
             socket.emit('roomCreated', roomCode);
-            console.log(`🆕 Oda: ${roomCode}`);
+            console.log(`🆕 Oda oluşturuldu: ${roomCode} - ${socket.id}`);
         } catch (err) {
             console.error('Hata:', err);
             socket.emit('error', 'Oda oluşturulamadı');
@@ -183,7 +217,7 @@ io.on('connection', (socket) => {
                     capturedB: room.capturedB
                 });
                 
-                console.log(`🎮 Oyun başladı: ${roomCode}`);
+                console.log(`🎮 Oyun başladı: ${roomCode} - ${playerA} vs ${playerB}`);
             }
         } catch (err) {
             console.error('Hata:', err);
@@ -199,7 +233,6 @@ io.on('connection', (socket) => {
             const [fromRow, fromCol] = from;
             const [toRow, toCol] = to;
             
-            // Yeme varsa captured listesine ekle
             if (capture) {
                 const [captureRow, captureCol] = capture;
                 const capturedPiece = room.board[captureRow][captureCol];
@@ -215,7 +248,6 @@ io.on('connection', (socket) => {
             
             room.board = applyMove(room.board, fromRow, fromCol, toRow, toCol, capture);
             
-            // Sırayı değiştir
             room.turn = room.turn === 'A' ? 'B' : 'A';
             
             const winner = checkWinner(room.board);
@@ -223,7 +255,6 @@ io.on('connection', (socket) => {
                 room.winner = winner;
             }
             
-            // Her oyuncuya güncelle
             const playerA = room.players[0].id;
             const playerB = room.players[1].id;
             
@@ -237,6 +268,7 @@ io.on('connection', (socket) => {
             
             if (winner) {
                 io.to(roomCode).emit('gameOver', { winner, ...updateData });
+                console.log(`🏁 Oyun bitti: ${roomCode} - Kazanan: ${winner}`);
             } else {
                 io.to(playerA).emit('updateBoard', { ...updateData, perspective: 'A' });
                 io.to(playerB).emit('updateBoard', { ...updateData, perspective: 'B' });
@@ -256,7 +288,6 @@ io.on('connection', (socket) => {
             
             const isKing = piece.type === 'king';
             
-            // Tüm hamleleri gönder (yeme zorunluluğu YOK)
             const captures = getCaptureMoves(room.board, row, col, team, isKing);
             const normalMoves = getNormalMoves(room.board, row, col, team, isKing);
             
@@ -301,6 +332,8 @@ io.on('connection', (socket) => {
                 capturedA: [],
                 capturedB: []
             });
+            
+            console.log(`🔄 Yeniden başladı: ${roomCode}`);
         } catch (err) {
             console.error('Yeniden başlatma hatası:', err);
         }
@@ -313,10 +346,17 @@ io.on('connection', (socket) => {
             const index = room.players.findIndex(p => p.id === socket.id);
             if (index !== -1) {
                 room.players.splice(index, 1);
+                io.to(roomCode).emit('playerLeft', socket.id);
+                console.log(`👋 Oyuncu ayrıldı: ${roomCode} - Kalan: ${room.players.length}`);
+                
                 if (room.players.length === 0) {
-                    delete rooms[roomCode];
-                } else {
-                    io.to(roomCode).emit('playerLeft', socket.id);
+                    // Boş odayı hemen silme, biraz bekle
+                    setTimeout(() => {
+                        if (rooms[roomCode] && rooms[roomCode].players.length === 0) {
+                            delete rooms[roomCode];
+                            console.log(`🗑️ Boş oda silindi: ${roomCode}`);
+                        }
+                    }, 60000); // 1 dakika bekle
                 }
                 break;
             }
@@ -324,7 +364,9 @@ io.on('connection', (socket) => {
     });
 });
 
+// PORT'u Render.com'un verdiği port olarak ayarla
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`🚀 Sunucu: http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Sunucu http://0.0.0.0:${PORT} adresinde çalışıyor...`);
+    console.log(`📊 Health check: http://0.0.0.0:${PORT}/health`);
 });
