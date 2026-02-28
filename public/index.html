@@ -2,8 +2,14 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
     <title>1vs1 Online Dama</title>
+    
+    <link rel="manifest" href="/manifest.json">
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -11,7 +17,6 @@
     <div class="container">
         <h1>🎮 1vs1 DAMA</h1>
         
-        <!-- Kullanıcı Bilgisi -->
         <div class="user-info">
             <div class="username-container">
                 <span class="username-label">👤 İsim:</span>
@@ -23,7 +28,6 @@
             <div id="userStatus" class="user-status">🟢 Çevrimiçi</div>
         </div>
 
-        <!-- İsim Düzenleme Modalı -->
         <div id="editUsernameModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <h3>İsmini Değiştir</h3>
@@ -34,62 +38,65 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Oda Kontrolleri -->
-        <div class="room-controls" id="lobbyControls">
-            <input type="text" id="roomCodeInput" placeholder="ODA KODU" maxlength="6">
-            <button id="createRoomBtn">🎲 ODA OLUŞTUR</button>
-            <button id="joinRoomBtn">🚪 ODAYA KATIL</button>
+
+        <div id="lobbyControls" class="lobby-controls">
+            <div class="lobby-card">
+                <h3><i class="fas fa-plus-circle"></i> Yeni Oda</h3>
+                <button id="createRoomBtn" class="main-btn create-btn">ODA KUR</button>
+            </div>
+            <div class="lobby-divider">VEYA</div>
+            <div class="lobby-card">
+                <h3><i class="fas fa-sign-in-alt"></i> Odaya Katıl</h3>
+                <input type="text" id="roomCodeInput" placeholder="Oda Kodunu Gir..." maxlength="6">
+                <button id="joinRoomBtn" class="main-btn join-btn">KATIL</button>
+            </div>
         </div>
-        
-        <div id="status" class="status">🔌 Sunucuya bağlanıyor...</div>
-        
-        <!-- Ana İçerik - Oyun ve Sohbet Yan Yana -->
-        <div class="main-content">
-            <!-- Oyun Alanı -->
-            <div id="gameArea" class="game-area hidden">
-                <div class="game-header">
-                    <div id="roomCode" class="room-code-badge"></div>
-                    <div class="player-indicator" id="playerTeam"></div>
-                    <button id="leaveRoomBtn" class="leave-btn">🏠 ANA SAYFA</button>
+
+        <div id="gameArea" class="game-area" style="display: none;">
+            <div class="game-header">
+                <div class="room-info">
+                    <span class="label">ODA KODU:</span>
+                    <span id="roomCode" class="code-val">-</span>
                 </div>
-                
-                <div class="game-content">
-                    <div class="board-wrapper">
-                        <div class="board" id="board"></div>
-                    </div>
-                    
-                    <div class="info-panel">
-                        <div id="turnIndicator" class="turn-indicator">---</div>
-                        <div id="players" class="players-list"></div>
-                        <div id="gameStatus" class="game-status"></div>
-                        <div id="capturedPieces" class="captured-pieces-container"></div>
-                    </div>
+                <div id="turnIndicator" class="turn-indicator">
+                    <span id="gameStatus">Oyuncular bekleniyor...</span>
                 </div>
             </div>
 
-            <!-- Sohbet Alanı -->
-            <div class="chat-sidebar">
-                <div class="chat-header">
-                    <h3><i class="fas fa-comments"></i> Genel Sohbet</h3>
-                </div>
-                
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-welcome">
-                        <i class="fas fa-hand-wave"></i> Sohbete hoşgeldin!
+            <div class="game-layout">
+                <div class="side-panel">
+                    <div class="players-list" id="players">
+                        </div>
+                    
+                    <div class="captured-section">
+                        <h4><i class="fas fa-trophy"></i> Yenen Taşlar</h4>
+                        <div id="capturedPieces" class="captured-pieces-container"></div>
                     </div>
                 </div>
-                
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Mesaj yaz..." maxlength="200">
-                    <button id="sendChatBtn" class="send-chat-btn">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+
+                <div class="board-container">
+                    <div id="board" class="board"></div>
+                </div>
+
+                <div class="chat-sidebar">
+                    <div class="chat-header">
+                        <h3><i class="fas fa-comments"></i> Genel Sohbet</h3>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-welcome">
+                            <i class="fas fa-hand-wave"></i> Sohbete hoşgeldin!
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Mesaj yaz..." maxlength="200">
+                        <button id="sendChatBtn" class="send-chat-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- Oyun Bitiş Overlay -->
         <div id="gameOverlay" class="game-overlay" style="display: none;">
             <div class="overlay-content">
                 <h2 id="winnerText"></h2>
