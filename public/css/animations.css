@@ -1,0 +1,768 @@
+/* =========================================
+   ANIMATIONS.CSS - Tüm Animasyonlar
+   Profesyonel animasyon kütüphanesi
+   ========================================= */
+
+/* -----------------------------------------
+   Page Loading Animasyonları
+   ----------------------------------------- */
+.page-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a1f12;
+    z-index: var(--z-loading);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.page-loading.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loading-spinner {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    animation: spinnerRotate 2s infinite linear;
+}
+
+.loading-spinner::before,
+.loading-spinner::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid transparent;
+}
+
+.loading-spinner::before {
+    border-top-color: #ff6b6b;
+    border-right-color: #6b9fff;
+    animation: spinnerDash 1.5s infinite ease-in-out;
+}
+
+.loading-spinner::after {
+    border-bottom-color: #ffd966;
+    border-left-color: #8b5a2b;
+    animation: spinnerDash 1.5s infinite ease-in-out reverse;
+}
+
+@keyframes spinnerRotate {
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes spinnerDash {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(180deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* -----------------------------------------
+   Welcome Message Animasyonları
+   ----------------------------------------- */
+.welcome-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: var(--z-max);
+    text-align: center;
+    animation: welcomeFadeIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    pointer-events: none;
+}
+
+.welcome-message.fade-out {
+    animation: welcomeFadeOut 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.welcome-text {
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 900;
+    color: #ffd966;
+    text-shadow: 
+        0 10px 0 #8b5a2b,
+        0 20px 40px rgba(0, 0, 0, 0.8),
+        0 0 80px gold;
+    margin-bottom: 30px;
+    animation: welcomeGlow 2s infinite;
+    letter-spacing: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.welcome-text .piece-icon {
+    font-size: 4rem;
+    color: gold;
+    animation: pieceFloat 3s infinite;
+}
+
+.welcome-subtext {
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    color: #f0e6d2;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.8s forwards;
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes welcomeFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -30%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes welcomeFadeOut {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -70%) scale(0.8);
+    }
+}
+
+@keyframes welcomeGlow {
+    0%, 100% {
+        text-shadow: 
+            0 10px 0 #8b5a2b,
+            0 20px 40px rgba(0, 0, 0, 0.8),
+            0 0 80px gold;
+    }
+    50% {
+        text-shadow: 
+            0 10px 0 #8b5a2b,
+            0 25px 50px rgba(0, 0, 0, 0.9),
+            0 0 120px gold;
+    }
+}
+
+/* -----------------------------------------
+   Particle Animasyonları
+   ----------------------------------------- */
+.welcome-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: gold;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particleFloat 3s ease-out forwards;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* -----------------------------------------
+   Modal Animasyonları
+   ----------------------------------------- */
+.modal {
+    animation: modalOverlayFade 0.3s ease;
+}
+
+@keyframes modalOverlayFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    animation: modalSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.7) translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* -----------------------------------------
+   Button Animasyonları
+   ----------------------------------------- */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+.btn i {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover i {
+    transform: rotate(360deg) scale(1.2);
+}
+
+/* -----------------------------------------
+   Input Animasyonları
+   ----------------------------------------- */
+.input-field {
+    transition: all 0.3s ease;
+    animation: inputPulse 3s infinite;
+}
+
+@keyframes inputPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.3);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(255, 215, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}
+
+/* -----------------------------------------
+   Card Animasyonları
+   ----------------------------------------- */
+.user-info, .room-controls, .status-message, .game-header, .board-wrapper, .info-panel {
+    animation: slideInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.user-info { animation-delay: 0.1s; }
+.room-controls { animation-delay: 0.2s; }
+.status-message { animation-delay: 0.3s; }
+.game-header { animation-delay: 0.4s; }
+.board-wrapper { animation-delay: 0.5s; }
+.info-panel { animation-delay: 0.6s; }
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -----------------------------------------
+   Piece Animasyonları
+   ----------------------------------------- */
+.piece {
+    animation: pieceAppear 0.3s ease;
+}
+
+@keyframes pieceAppear {
+    from {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+}
+
+/* -----------------------------------------
+   Status Shine Animasyonu
+   ----------------------------------------- */
+.status-message {
+    position: relative;
+    overflow: hidden;
+}
+
+.status-message::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    100% { left: 100%; }
+}
+
+/* -----------------------------------------
+   Turn Indicator Animasyonu
+   ----------------------------------------- */
+.turn-indicator {
+    position: relative;
+    overflow: hidden;
+}
+
+.turn-indicator::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2), transparent);
+    animation: turnPulse 2s infinite;
+}
+
+@keyframes turnPulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 0.5; }
+}
+
+/* -----------------------------------------
+   Message Slide Animasyonu
+   ----------------------------------------- */
+.message {
+    animation: messageSlide 0.3s ease;
+    transform-origin: left;
+}
+
+.message.own-message {
+    transform-origin: right;
+}
+
+@keyframes messageSlide {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateX(var(--direction, -20px));
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateX(0);
+    }
+}
+
+.message.own-message {
+    --direction: 20px;
+}
+
+/* -----------------------------------------
+   Square Hover Animasyonu
+   ----------------------------------------- */
+.square {
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.square::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+    border-radius: 50%;
+}
+
+.square:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+/* -----------------------------------------
+   Title Glow Animasyonu
+   ----------------------------------------- */
+h1 {
+    animation: titleFloat 3s ease-in-out infinite;
+}
+
+@keyframes titleFloat {
+    0%, 100% {
+        transform: translateX(-50%) scale(1);
+    }
+    50% {
+        transform: translateX(-50%) scale(1.05);
+    }
+}
+
+/* -----------------------------------------
+   Footer Line Animasyonu
+   ----------------------------------------- */
+.footer {
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, gold, transparent);
+    animation: footerLine 3s infinite;
+}
+
+@keyframes footerLine {
+    100% { left: 100%; }
+}
+
+/* -----------------------------------------
+   Online Count Shine Animasyonu
+   ----------------------------------------- */
+.online-count {
+    position: relative;
+    overflow: hidden;
+}
+
+.online-count::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
+    animation: countShine 3s infinite;
+}
+
+@keyframes countShine {
+    100% { left: 100%; }
+}
+
+/* -----------------------------------------
+   Konfeti Animasyonu
+   ----------------------------------------- */
+.confetti {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    top: -20px;
+    z-index: var(--z-toast);
+    animation: confettiFall 4s ease-in forwards;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+    filter: drop-shadow(0 0 5px currentColor);
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(1080deg);
+        opacity: 0;
+    }
+}
+
+/* -----------------------------------------
+   Explosion Animasyonu
+   ----------------------------------------- */
+.explosion-particle {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: calc(var(--z-toast) + 1);
+    animation: explosion 0.6s ease-out forwards;
+    box-shadow: 0 0 15px currentColor;
+}
+
+@keyframes explosion {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(calc(cos(var(--angle)) * var(--distance)), calc(sin(var(--angle)) * var(--distance))) scale(0);
+        opacity: 0;
+    }
+}
+
+/* -----------------------------------------
+   Winner Trophy Animasyonu
+   ----------------------------------------- */
+@keyframes winnerTrophy {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 20px gold);
+    }
+    50% {
+        transform: scale(1.2) rotate(10deg);
+        filter: drop-shadow(0 0 40px gold);
+    }
+}
+
+/* -----------------------------------------
+   Bounce In Animasyonu
+   ----------------------------------------- */
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* -----------------------------------------
+   Fade In Up Animasyonu
+   ----------------------------------------- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -----------------------------------------
+   Fade In Down Animasyonu
+   ----------------------------------------- */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* -----------------------------------------
+   Fade In Left Animasyonu
+   ----------------------------------------- */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* -----------------------------------------
+   Fade In Right Animasyonu
+   ----------------------------------------- */
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* -----------------------------------------
+   Rotate Animasyonu
+   ----------------------------------------- */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* -----------------------------------------
+   Pulse Animasyonu
+   ----------------------------------------- */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* -----------------------------------------
+   Shake Animasyonu
+   ----------------------------------------- */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* -----------------------------------------
+   Float Animasyonu
+   ----------------------------------------- */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* -----------------------------------------
+   Glow Animasyonu
+   ----------------------------------------- */
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px gold, 0 0 10px gold;
+    }
+    50% {
+        box-shadow: 0 0 20px gold, 0 0 40px gold;
+    }
+}
+
+/* -----------------------------------------
+   Slide In Right Animasyonu
+   ----------------------------------------- */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* -----------------------------------------
+   Slide In Left Animasyonu
+   ----------------------------------------- */
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* -----------------------------------------
+   Zoom In Animasyonu
+   ----------------------------------------- */
+@keyframes zoomIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* -----------------------------------------
+   Flip Animasyonu
+   ----------------------------------------- */
+@keyframes flip {
+    0% {
+        transform: perspective(400px) rotateY(0);
+    }
+    100% {
+        transform: perspective(400px) rotateY(360deg);
+    }
+}
+
+/* -----------------------------------------
+   Responsive Animasyonlar
+   ----------------------------------------- */
+@media (max-width: 768px) {
+    .welcome-text {
+        font-size: 3rem;
+        gap: 10px;
+    }
+    
+    .welcome-text .piece-icon {
+        font-size: 2.5rem;
+    }
+    
+    .confetti {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-text {
+        font-size: 2rem;
+        gap: 5px;
+    }
+    
+    .welcome-text .piece-icon {
+        font-size: 1.8rem;
+    }
+}
+
+/* -----------------------------------------
+   Reduced Motion
+   ----------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

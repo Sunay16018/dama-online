@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnternet Bağlantısı Yok - Dama Oyunu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a1f12, #1a472a, #2d5a3a);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+        
+        .offline-container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .offline-card {
+            background: rgba(10, 20, 10, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 40px;
+            padding: 40px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        h1 {
+            color: #ffd966;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 0 #8b5a2b;
+        }
+        
+        p {
+            color: #f0e6d2;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .board-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+        }
+        
+        .board-preview .square {
+            aspect-ratio: 1;
+            border-radius: 8px;
+        }
+        
+        .square.light {
+            background: #f5e6d3;
+        }
+        
+        .square.dark {
+            background: #8b5a2b;
+        }
+        
+        .piece {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .piece.red {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #8b0000);
+        }
+        
+        .piece.blue {
+            background: radial-gradient(circle at 30% 30%, #6b9fff, #00008b);
+        }
+        
+        .retry-btn {
+            background: linear-gradient(145deg, #8b5a2b, #b8860b);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #5a3a1b;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .retry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #5a3a1b;
+        }
+        
+        .retry-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #5a3a1b;
+        }
+        
+        .offline-games {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+        }
+        
+        .offline-games h3 {
+            color: #ffd966;
+            margin-bottom: 15px;
+        }
+        
+        .game-link {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .game-link:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.2);
+            border-radius: 10px;
+            color: #ff6b6b;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 480px) {
+            .offline-card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-card">
+            <div class="icon">📴</div>
+            <h1>BAĞLANTI YOK</h1>
+            <p>İnternet bağlantınız kesildi.<br>Tekrar bağlanmak için bekleyin.</p>
+            
+            <div class="board-preview">
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square dark">
+                    <div class="piece red"></div>
+                </div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark">
+                    <div class="piece blue"></div>
+                </div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+                <div class="square dark"></div>
+                <div class="square light"></div>
+            </div>
+            
+            <div class="offline-games">
+                <h3>🎮 OFFLINE OYUNLAR</h3>
+                <a href="#" class="game-link" onclick="alert('Offline modda sadece bilgisayara karşı oynayabilirsiniz')">
+                    🤖 Bilgisayara Karşı Oyna
+                </a>
+                <a href="#" class="game-link" onclick="alert('İki kişilik offline mod yakında!')">
+                    👥 İki Kişilik (Aynı Cihaz)
+                </a>
+                <a href="#" class="game-link" onclick="alert('Çözümler yakında!')">
+                    📚 Dama Problemleri
+                </a>
+            </div>
+            
+            <button class="retry-btn" onclick="checkConnection()">
+                🔄 TEKRAR DENE
+            </button>
+            
+            <div class="status" id="status">
+                <i class="fas fa-spinner fa-pulse"></i> Yeniden bağlanmaya çalışılıyor...
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function checkConnection() {
+            const status = document.getElementById('status');
+            status.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Bağlantı kontrol ediliyor...';
+            
+            fetch('/health', { 
+                method: 'HEAD',
+                cache: 'no-cache',
+                timeout: 5000
+            })
+            .then(() => {
+                status.innerHTML = '✅ Bağlantı var! Yönlendiriliyor...';
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            })
+            .catch(() => {
+                status.innerHTML = '❌ Hala bağlantı yok. Tekrar deneyin.';
+            });
+        }
+        
+        // Otomatik kontrol
+        let attempts = 0;
+        const maxAttempts = 10;
+        
+        function autoCheck() {
+            if (attempts >= maxAttempts) return;
+            
+            setTimeout(() => {
+                fetch('/health', { method: 'HEAD' })
+                    .then(() => {
+                        window.location.href = '/';
+                    })
+                    .catch(() => {
+                        attempts++;
+                        autoCheck();
+                    });
+            }, 3000);
+        }
+        
+        autoCheck();
+        
+        // Service worker mesajı
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage('offline');
+        }
+    </script>
+</body>
+</html>

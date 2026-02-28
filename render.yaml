@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: online-dama
+    runtime: node
+    repo: https://github.com/yourusername/online-dama
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: NPM_VERSION
+        value: 9.6.7
