@@ -2,477 +2,111 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     
-    <!-- ===== TEMEL SEO ===== -->
-    <title>1vs1 Online Dama | Profesyonel Gerçek Zamanlı Dama Oyunu</title>
-    <meta name="description" content="Gerçek zamanlı 1vs1 online dama oyunu. Arkadaşlarınla dama oyna, sohbet et, strateji yap, eğlen! Profesyonel grafikler, akıcı animasyonlar, çoklu yeme desteği.">
-    <meta name="keywords" content="dama, online dama, dama oyunu, 1vs1, çok oyunculu, sohbetli, gerçek zamanlı, board game, checkers, online checkers, turkish dama">
-    <meta name="author" content="Dama Pro Team">
-    <meta name="robots" content="index, follow">
-    <meta name="language" content="Turkish">
+    <title>1vs1 Online Dama</title>
     
-    <!-- ===== OPEN GRAPH / SOSYAL MEDYA ===== -->
-    <meta property="og:title" content="1vs1 Online Dama - Profesyonel Dama Oyunu">
-    <meta property="og:description" content="Gerçek zamanlı 1vs1 online dama oyunu. Arkadaşlarınla hemen oyna!">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://online-dama.onrender.com">
-    <meta property="og:image" content="https://online-dama.onrender.com/images/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:locale" content="tr_TR">
-    
-    <!-- ===== TWITTER CARD ===== -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="1vs1 Online Dama">
-    <meta name="twitter:description" content="Arkadaşlarınla online dama oyna!">
-    <meta name="twitter:image" content="https://online-dama.onrender.com/images/twitter-card.jpg">
-    
-    <!-- ===== PWA MANIFEST ===== -->
     <link rel="manifest" href="/manifest.json">
     
-    <!-- ===== RENK AYARLARI ===== -->
-    <meta name="theme-color" content="#1a472a">
-    <meta name="msapplication-TileColor" content="#1a472a">
-    
-    <!-- ===== iOS AYARLARI ===== -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Online Dama">
-    
-    <!-- ===== FONT AWESOME ===== -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- ===== GOOGLE FONTS ===== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- ===== CSS DOSYALARI ===== -->
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/board.css">
-    <link rel="stylesheet" href="/css/chat.css">
-    <link rel="stylesheet" href="/css/animations.css">
-    
-    <!-- ===== CRITICAL CSS ===== -->
-    <style>
-        /* Sayfa yüklenirken gösterilecek kritik stiller */
-        .page-loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a1f12;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-        
-        .loading-spinner {
-            width: 100px;
-            height: 100px;
-            border: 5px solid #2d5a3a;
-            border-top-color: gold;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .welcome-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10000;
-            text-align: center;
-            pointer-events: none;
-            animation: welcomeFadeIn 1s ease forwards;
-        }
-        
-        @keyframes welcomeFadeIn {
-            from { opacity: 0; transform: translate(-50%, -30%); }
-            to { opacity: 1; transform: translate(-50%, -50%); }
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        .fade-out {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-    </style>
 </head>
 <body>
-    <!-- ===== LOADING OVERLAY ===== -->
-    <div id="pageLoading" class="page-loading">
-        <div class="loading-spinner"></div>
-    </div>
-    
-    <!-- ===== HOŞGELDİN MESAJI ===== -->
-    <div id="welcomeMessage" class="welcome-message">
-        <div class="welcome-text">
-            <span class="piece-icon">♜</span>
-            <span>DAMA</span>
-            <span class="piece-icon">♝</span>
-        </div>
-        <div class="welcome-subtext">Hoşgeldin, hadi oynayalım!</div>
-        <div id="welcomeParticles" class="welcome-particles"></div>
-    </div>
-    
-    <!-- ===== ANA KONTEYNIR ===== -->
     <div class="container">
-        <!-- ===== HEADER ===== -->
-        <header class="header">
-            <h1 class="glow-title">
-                <i class="fas fa-crown"></i>
-                1VS1 DAMA
-                <i class="fas fa-crown"></i>
-            </h1>
-        </header>
+        <h1>🎮 1vs1 DAMA</h1>
         
-        <!-- ===== KULLANICI BİLGİSİ ===== -->
-        <section class="user-section">
-            <div class="user-info glass-effect">
-                <div class="user-avatar">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="user-details">
-                    <div class="username-container">
-                        <span class="username-label">İSİM</span>
-                        <span id="usernameDisplay" class="username-display">Oyuncu-</span>
-                        <button id="editUsernameBtn" class="btn-icon" title="İsmini değiştir">
-                            <i class="fas fa-pencil-alt"></i>
-                        </button>
-                    </div>
-                    <div class="user-stats">
-                        <span class="stat-item">
-                            <i class="fas fa-trophy"></i>
-                            <span id="userWins">0</span>
-                        </span>
-                        <span class="stat-item">
-                            <i class="fas fa-gamepad"></i>
-                            <span id="userGames">0</span>
-                        </span>
-                    </div>
-                </div>
-                <div id="userStatus" class="user-status online">
-                    <i class="fas fa-circle"></i>
-                    <span>Çevrimiçi</span>
-                </div>
+        <div class="user-info">
+            <div class="username-container">
+                <span class="username-label">👤 İsim:</span>
+                <span id="usernameDisplay" class="username-display">Oyuncu-</span>
+                <button id="editUsernameBtn" class="edit-username-btn">
+                    <i class="fas fa-pencil-alt"></i>
+                </button>
             </div>
-        </section>
+            <div id="userStatus" class="user-status">🟢 Çevrimiçi</div>
+        </div>
 
-        <!-- ===== İSİM DÜZENLEME MODALI ===== -->
-        <div id="editUsernameModal" class="modal" aria-hidden="true">
-            <div class="modal-overlay"></div>
-            <div class="modal-content glass-effect">
-                <div class="modal-header">
-                    <h3><i class="fas fa-user-edit"></i> İsmini Değiştir</h3>
-                    <button class="modal-close" aria-label="Kapat">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" 
-                               id="newUsernameInput" 
-                               placeholder="Yeni ismin..." 
-                               maxlength="20" 
-                               autocomplete="off"
-                               class="input-field">
-                    </div>
-                    <p class="input-hint">En fazla 20 karakter</p>
-                </div>
-                <div class="modal-footer">
-                    <button id="saveUsernameBtn" class="btn btn-primary">
-                        <i class="fas fa-check"></i> Kaydet
-                    </button>
-                    <button id="cancelUsernameBtn" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> İptal
-                    </button>
+        <div id="editUsernameModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>İsmini Değiştir</h3>
+                <input type="text" id="newUsernameInput" placeholder="Yeni ismin..." maxlength="20">
+                <div class="modal-buttons">
+                    <button id="saveUsernameBtn" class="modal-btn save-btn">Kaydet</button>
+                    <button id="cancelUsernameBtn" class="modal-btn cancel-btn">İptal</button>
                 </div>
             </div>
         </div>
-        
-        <!-- ===== ODA KONTROLLERİ ===== -->
-        <section class="lobby-section">
-            <div class="room-controls glass-effect">
-                <div class="input-group">
-                    <i class="fas fa-key"></i>
-                    <input type="text" 
-                           id="roomCodeInput" 
-                           placeholder="ODA KODU" 
-                           maxlength="6" 
-                           autocomplete="off"
-                           class="input-field">
-                </div>
-                <div class="button-group">
-                    <button id="createRoomBtn" class="btn btn-primary btn-large">
-                        <i class="fas fa-dice"></i>
-                        <span>ODA OLUŞTUR</span>
-                    </button>
-                    <button id="joinRoomBtn" class="btn btn-secondary btn-large">
-                        <i class="fas fa-door-open"></i>
-                        <span>ODAYA KATIL</span>
-                    </button>
-                </div>
-            </div>
-            
-            <div id="status" class="status-message glass-effect">
-                <i class="fas fa-plug"></i>
-                <span>Sunucuya bağlanıyor...</span>
-            </div>
-        </section>
-        
-        <!-- ===== ANA İÇERİK ===== -->
-        <main class="main-content">
-            <!-- ===== OYUN ALANI ===== -->
-            <section id="gameArea" class="game-area hidden">
-                <!-- Oyun Header -->
-                <div class="game-header glass-effect">
-                    <div class="room-info">
-                        <i class="fas fa-door-closed"></i>
-                        <span id="roomCode" class="room-code">---</span>
-                    </div>
-                    <div class="player-indicator" id="playerTeam"></div>
-                    <button id="leaveRoomBtn" class="btn btn-danger">
-                        <i class="fas fa-home"></i>
-                        <span class="btn-text">ANA SAYFA</span>
-                    </button>
-                </div>
-                
-                <!-- Oyun İçeriği -->
-                <div class="game-content">
-                    <!-- Tahta -->
-                    <div class="board-wrapper glass-effect">
-                        <div class="board" id="board"></div>
-                        <div class="board-coordinates">
-                            <div class="files">
-                                <span>a</span><span>b</span><span>c</span><span>d</span>
-                                <span>e</span><span>f</span><span>g</span><span>h</span>
-                            </div>
-                            <div class="ranks">
-                                <span>1</span><span>2</span><span>3</span><span>4</span>
-                                <span>5</span><span>6</span><span>7</span><span>8</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Bilgi Paneli -->
-                    <div class="info-panel glass-effect">
-                        <div id="turnIndicator" class="turn-indicator">---</div>
-                        
-                        <div class="players-panel">
-                            <h3><i class="fas fa-users"></i> OYUNCULAR</h3>
-                            <div id="players" class="players-list"></div>
-                        </div>
-                        
-                        <div id="gameStatus" class="game-status">
-                            <i class="fas fa-hourglass-half"></i>
-                            <span>Oyun bekleniyor...</span>
-                        </div>
-                        
-                        <div class="captured-panel">
-                            <h3><i class="fas fa-chess-board"></i> YENEN TAŞLAR</h3>
-                            <div id="capturedPieces" class="captured-pieces-container"></div>
-                        </div>
-                        
-                        <div class="move-history">
-                            <h3><i class="fas fa-history"></i> HAMLE GEÇMİŞİ</h3>
-                            <div id="moveHistory" class="history-list"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
-            <!-- ===== SOHBET ALANI ===== -->
-            <aside class="chat-sidebar glass-effect">
-                <div class="chat-header">
-                    <h3>
-                        <i class="fas fa-comments"></i>
-                        <span>GENEL SOHBET</span>
-                    </h3>
-                    <div class="chat-tools">
-                        <button id="clearChatBtn" class="btn-icon" title="Sohbeti temizle">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                        <div class="online-count" id="onlineCount">
-                            <i class="fas fa-users"></i>
-                            <span>0</span>
+        <div id="lobbyControls" class="lobby-controls">
+            <div class="lobby-card">
+                <h3><i class="fas fa-plus-circle"></i> Yeni Oda</h3>
+                <button id="createRoomBtn" class="main-btn create-btn">ODA KUR</button>
+            </div>
+            <div class="lobby-divider">VEYA</div>
+            <div class="lobby-card">
+                <h3><i class="fas fa-sign-in-alt"></i> Odaya Katıl</h3>
+                <input type="text" id="roomCodeInput" placeholder="Oda Kodunu Gir..." maxlength="6">
+                <button id="joinRoomBtn" class="main-btn join-btn">KATIL</button>
+            </div>
+        </div>
+
+        <div id="gameArea" class="game-area" style="display: none;">
+            <div class="game-header">
+                <div class="room-info">
+                    <span class="label">ODA KODU:</span>
+                    <span id="roomCode" class="code-val">-</span>
+                </div>
+                <div id="turnIndicator" class="turn-indicator">
+                    <span id="gameStatus">Oyuncular bekleniyor...</span>
+                </div>
+            </div>
+
+            <div class="game-layout">
+                <div class="side-panel">
+                    <div class="players-list" id="players">
+                        </div>
+                    
+                    <div class="captured-section">
+                        <h4><i class="fas fa-trophy"></i> Yenen Taşlar</h4>
+                        <div id="capturedPieces" class="captured-pieces-container"></div>
+                    </div>
+                </div>
+
+                <div class="board-container">
+                    <div id="board" class="board"></div>
+                </div>
+
+                <div class="chat-sidebar">
+                    <div class="chat-header">
+                        <h3><i class="fas fa-comments"></i> Genel Sohbet</h3>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-welcome">
+                            <i class="fas fa-hand-wave"></i> Sohbete hoşgeldin!
                         </div>
                     </div>
-                </div>
-                
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-welcome">
-                        <i class="fas fa-hand-wave"></i>
-                        <p>Sohbete hoşgeldin! Nazik ol, eğlen.</p>
-                        <small>🔔 Kurallara uymayanlar banlanır</small>
-                    </div>
-                </div>
-                
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <textarea id="chatInput" 
-                                  placeholder="Mesaj yaz..." 
-                                  maxlength="200" 
-                                  rows="1"
-                                  class="input-field"></textarea>
-                        <button id="sendChatBtn" class="btn btn-primary btn-circle" title="Gönder">
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Mesaj yaz..." maxlength="200">
+                        <button id="sendChatBtn" class="send-chat-btn">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
-                    <div class="chat-footer">
-                        <i class="fas fa-globe"></i>
-                        <span>Herkes görür • Enter gönderir • 200 karakter</span>
-                    </div>
                 </div>
-            </aside>
-        </main>
+            </div>
+        </div>
         
-        <!-- ===== OYUN BİTİŞ OVERLAY ===== -->
-        <div id="gameOverlay" class="overlay" style="display: none;">
-            <div class="overlay-content glass-effect">
-                <div class="winner-animation">
-                    <i class="fas fa-trophy"></i>
-                </div>
+        <div id="gameOverlay" class="game-overlay" style="display: none;">
+            <div class="overlay-content">
                 <h2 id="winnerText"></h2>
-                <div id="gameStats" class="game-stats"></div>
-                <div class="overlay-actions">
-                    <button id="playAgainBtn" class="btn btn-primary btn-large">
-                        <i class="fas fa-redo-alt"></i>
-                        <span>TEKRAR OYNA</span>
-                    </button>
-                    <button id="backToLobbyBtn" class="btn btn-secondary btn-large">
-                        <i class="fas fa-home"></i>
-                        <span>ANA SAYFA</span>
-                    </button>
-                </div>
+                <button id="playAgainBtn" class="play-again-btn">🔄 TEKRAR OYNA</button>
+                <button id="backToLobbyBtn" class="back-btn">🏠 ANA SAYFA</button>
             </div>
         </div>
-        
-        <!-- ===== OFFLİNE BİLDİRİMİ ===== -->
-        <div id="offlineNotification" class="offline-notification hidden">
-            <i class="fas fa-wifi-slash"></i>
-            <span>İnternet bağlantısı koptu. Yeniden bağlanılıyor...</span>
-        </div>
-        
-        <!-- ===== SES EFEKTLERİ ===== -->
-        <audio id="moveSound" preload="auto" style="display: none;">
-            <source src="/sounds/move.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="captureSound" preload="auto" style="display: none;">
-            <source src="/sounds/capture.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="winSound" preload="auto" style="display: none;">
-            <source src="/sounds/win.mp3" type="audio/mpeg">
-        </audio>
-        <audio id="selectSound" preload="auto" style="display: none;">
-            <source src="/sounds/select.mp3" type="audio/mpeg">
-        </audio>
-        
-        <!-- ===== FOOTER ===== -->
-        <footer class="footer">
-            <div class="footer-content">
-                <p>
-                    <i class="fas fa-crown"></i>
-                    © 2024 1vs1 Online Dama | 
-                    <span class="version">v2.0.0</span> | 
-                    <a href="#" class="footer-link">Gizlilik</a> | 
-                    <a href="#" class="footer-link">Şartlar</a>
-                    <i class="fas fa-crown"></i>
-                </p>
-                <p class="build-info">
-                    <i class="fas fa-code-branch"></i> 
-                    Son güncelleme: <span id="buildTime">2024</span>
-                </p>
-            </div>
-        </footer>
     </div>
     
-    <!-- ===== SCRİPTLER ===== -->
-    <!-- Socket.io (önce yüklensin) -->
     <script src="/socket.io/socket.io.js"></script>
-    
-    <!-- İkon yükleyici (senin 8 PNG'yi otomatik kullanır) -->
-    <script src="/js/icon-loader.js" defer></script>
-    
-    <!-- Performans optimizasyonu -->
-    <script src="/js/performance.js" defer></script>
-    
-    <!-- Ana JS dosyaları -->
-    <script src="/js/chat.js" defer></script>
-    <script src="/js/board.js" defer></script>
-    <script src="/js/game.js" defer></script>
-    <script src="/js/main.js" defer></script>
-    
-    <!-- ===== BAŞLANGIÇ ANİMASYONLARI ===== -->
-    <script>
-        (function() {
-            // Loading overlay
-            setTimeout(() => {
-                const loader = document.getElementById('pageLoading');
-                if (loader) loader.classList.add('fade-out');
-            }, 1500);
-            
-            // Welcome message
-            setTimeout(() => {
-                const welcome = document.getElementById('welcomeMessage');
-                if (welcome) welcome.classList.add('fade-out');
-            }, 2800);
-            
-            // Welcome particles
-            const particles = document.getElementById('welcomeParticles');
-            if (particles) {
-                for (let i = 0; i < 50; i++) {
-                    setTimeout(() => {
-                        const p = document.createElement('div');
-                        p.className = 'particle';
-                        p.style.left = Math.random() * 100 + '%';
-                        p.style.top = Math.random() * 100 + '%';
-                        p.style.animationDelay = Math.random() * 2 + 's';
-                        p.style.background = `hsl(${Math.random() * 60 + 30}, 100%, 60%)`;
-                        particles.appendChild(p);
-                        setTimeout(() => p.remove(), 3000);
-                    }, i * 30);
-                }
-            }
-            
-            // Offline detection
-            window.addEventListener('offline', () => {
-                document.getElementById('offlineNotification').classList.remove('hidden');
-            });
-            
-            window.addEventListener('online', () => {
-                const notif = document.getElementById('offlineNotification');
-                notif.classList.add('hidden');
-                setTimeout(() => window.location.reload(), 1000);
-            });
-            
-            // Build time
-            document.getElementById('buildTime').textContent = new Date().getFullYear();
-            
-            // Service worker
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/service-worker.js')
-                        .then(reg => console.log('✅ Service Worker kayıtlı:', reg.scope))
-                        .catch(err => console.log('❌ Service Worker hatası:', err));
-                });
-            }
-        })();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "name": "1vs1 Online Dama",
+  "short_name": "Dama Online",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a472a",
+  "theme_color": "#ffd966",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://online-dama.onrender.com/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
